@@ -1,7 +1,7 @@
-package com.danielpg.paymentgateway.ut.domain.usuario;
+package com.danielpg.paymentgateway.ut.domain.user;
 
-import com.danielpg.paymentgateway.domain.usuario.Cpf;
-import com.danielpg.paymentgateway.domain.usuario.InvalidCpfException;
+import com.danielpg.paymentgateway.domain.user.Cpf;
+import com.danielpg.paymentgateway.domain.user.InvalidCpfException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.domain.usuario;
+package com.danielpg.paymentgateway.domain.user;
 
 import io.micrometer.common.util.StringUtils;
 

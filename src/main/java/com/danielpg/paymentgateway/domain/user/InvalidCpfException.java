@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.domain.usuario;
+package com.danielpg.paymentgateway.domain.user;
 
 public class InvalidCpfException extends IllegalArgumentException {
 

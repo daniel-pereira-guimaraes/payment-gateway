@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.domain.usuario;
+package com.danielpg.paymentgateway.domain.user;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;

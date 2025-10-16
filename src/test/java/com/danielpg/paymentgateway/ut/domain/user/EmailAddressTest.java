@@ -1,7 +1,7 @@
-package com.danielpg.paymentgateway.ut.domain.usuario;
+package com.danielpg.paymentgateway.ut.domain.user;
 
-import com.danielpg.paymentgateway.domain.usuario.EmailAddress;
-import com.danielpg.paymentgateway.domain.usuario.InvalidEmailAddressException;
+import com.danielpg.paymentgateway.domain.user.EmailAddress;
+import com.danielpg.paymentgateway.domain.user.InvalidEmailAddressException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
