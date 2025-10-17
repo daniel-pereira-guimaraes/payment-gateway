@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.AppClock;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserNotFoundException;
@@ -53,7 +53,7 @@ public class CreateChargeService {
     public record Request(
             Cpf issuerCpf,
             Cpf payercpf,
-            Amount amount,
+            PositiveMoney amount,
             String description) {
-    };
+    }
 }

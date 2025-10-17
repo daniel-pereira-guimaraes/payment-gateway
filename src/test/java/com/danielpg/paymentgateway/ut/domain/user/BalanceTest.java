@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.user;
 
-import com.danielpg.paymentgateway.domain.Amount;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Balance;
 import com.danielpg.paymentgateway.domain.user.InsufficientBalanceException;
 import org.junit.jupiter.api.Test;
@@ -100,7 +100,7 @@ class BalanceTest {
     @Test
     void subtractThrowsExceptionWhenValueIsLessThanAmountToSubtract() {
         var balance = Balance.of(BigDecimal.TEN);
-        var subtractValue = Amount.of(balance.value().add(new BigDecimal("0.01")));
+        var subtractValue = PositiveMoney.of(balance.value().add(new BigDecimal("0.01")));
 
         var exception = assertThrows(InsufficientBalanceException.class,
                 () -> balance.subtract(subtractValue)

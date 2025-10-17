@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.user;
 
-import com.danielpg.paymentgateway.domain.Amount;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.*;
 import com.danielpg.paymentgateway.fixture.UserFixture;
 import org.junit.jupiter.api.Test;
@@ -154,7 +154,7 @@ class UserTest {
     void increasesBalanceWhenValidAmount() {
         var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
 
-        user.increaseBalance(Amount.of(BigDecimal.TWO));
+        user.increaseBalance(PositiveMoney.of(BigDecimal.TWO));
 
         assertThat(user.balance(), is(Balance.of(new BigDecimal(12))));
     }
@@ -163,7 +163,7 @@ class UserTest {
     void decreasesBalanceWhenAmountIsLessThanBalance() {
         var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
 
-        user.decreaseBalance(Amount.of(BigDecimal.TWO));
+        user.decreaseBalance(PositiveMoney.of(BigDecimal.TWO));
 
         assertThat(user.balance(), is(Balance.of(new BigDecimal("8"))));
     }
@@ -172,7 +172,7 @@ class UserTest {
     void decreasesBalanceWhenAmountEqualsBalance() {
         var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
 
-        user.decreaseBalance(Amount.of(BigDecimal.TEN));
+        user.decreaseBalance(PositiveMoney.of(BigDecimal.TEN));
 
         assertThat(user.balance(), is(Balance.of(BigDecimal.ZERO)));
     }
@@ -182,7 +182,7 @@ class UserTest {
         var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
 
         var exception = assertThrows(InsufficientBalanceException.class,
-                () -> user.decreaseBalance(Amount.of(new BigDecimal("10.01")))
+                () -> user.decreaseBalance(PositiveMoney.of(new BigDecimal("10.01")))
         );
 
         assertThat(exception.getMessage(), is("Saldo insuficiente."));

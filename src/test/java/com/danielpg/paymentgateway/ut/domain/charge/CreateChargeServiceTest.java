@@ -1,10 +1,10 @@
 package com.danielpg.paymentgateway.ut.domain.charge;
 
 import com.danielpg.paymentgateway.domain.AppClock;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.CreateChargeService;
-import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserNotFoundException;
@@ -28,7 +28,7 @@ class CreateChargeServiceTest {
     private static final Cpf PAYER_CPF = CpfFixture.CPF2;
     private static final User ISSUER = UserFixture.builder().withCpf(ISSUER_CPF).build();
     private static final User PAYER = UserFixture.builder().withCpf(PAYER_CPF).build();
-    private static final Amount AMOUNT = Amount.of(BigDecimal.TEN);
+    private static final PositiveMoney AMOUNT = PositiveMoney.of(BigDecimal.TEN);
     private static final String DESCRIPTION = "Test charge";
     private static final TimeMillis NOW = TimeMillis.of(1_000_000L);
     private static final CreateChargeService.Request REQUEST =

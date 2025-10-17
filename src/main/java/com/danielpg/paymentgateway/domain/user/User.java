@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.Amount;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.Validation;
 
 import java.util.Objects;
@@ -47,11 +47,11 @@ public class User {
         return balance;
     }
 
-    public void increaseBalance(Amount amount) {
+    public void increaseBalance(PositiveMoney amount) {
         this.balance = this.balance.add(amount);
     }
 
-    public void decreaseBalance(Amount amount) {
+    public void decreaseBalance(PositiveMoney amount) {
         if (this.balance.compareTo(amount) < 0) {
             throw new InsufficientBalanceException();
         }

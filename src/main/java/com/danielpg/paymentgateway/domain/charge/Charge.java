@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.Amount;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
@@ -11,7 +11,7 @@ public class Charge {
     private ChargeId id;
     private final UserId issuerId;
     private final UserId payerId;
-    private final Amount amount;
+    private final PositiveMoney amount;
     private final String description;
     private final TimeMillis createdAt;
     private final TimeMillis dueAt;
@@ -46,7 +46,7 @@ public class Charge {
         return payerId;
     }
 
-    public Amount amount() {
+    public PositiveMoney amount() {
         return amount;
     }
 
@@ -78,7 +78,7 @@ public class Charge {
         private ChargeId id;
         private UserId issuerId;
         private UserId payerId;
-        private Amount amount;
+        private PositiveMoney amount;
         private String description;
         private TimeMillis createdAt;
         private TimeMillis dueAt;
@@ -101,7 +101,7 @@ public class Charge {
             return this;
         }
 
-        public Builder withAmount(Amount amount) {
+        public Builder withAmount(PositiveMoney amount) {
             this.amount = amount;
             return this;
         }
