@@ -48,4 +48,17 @@ class HashedPasswordTest {
         assertThat(result.get().hash(), is(NON_BLANK_HASH));
     }
 
+    @Test
+    void equalsAndHashCodeEqualWhenValueIsSame() {
+        var password1 = HashedPassword.of("hash1");
+        var password2 = HashedPassword.of("hash1");
+        var password3 = HashedPassword.of("hash2");
+
+        assertThat(password1, is(password2));
+        assertThat(password1, not(password3));
+        assertThat(password1, not("hash1"));
+        assertThat(password1.hashCode(), is(password2.hashCode()));
+        assertThat(password1.hashCode(), not(password3.hashCode()));
+    }
+
 }
