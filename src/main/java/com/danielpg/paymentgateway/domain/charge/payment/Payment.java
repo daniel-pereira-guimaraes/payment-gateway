@@ -1,26 +1,19 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
+import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.Validation;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 public class Payment {
 
     private PaymentId id;
     private final ChargeId chargeId;
-    private final Instant paidAt;
+    private final TimeMillis paidAt;
 
     private Payment(Builder builder) {
         this.id = builder.id;
         this.chargeId = Validation.required(builder.chargeId, "O id da cobrança é requerido.");
-        this.paidAt = validatePaidAt(builder.paidAt);
-    }
-
-    private static Instant validatePaidAt(Instant paidAt) {
-        Validation.required(paidAt, "A data/hora do pagamento é requerida.");
-        return paidAt.truncatedTo(ChronoUnit.MILLIS);
+        this.paidAt = Validation.required(builder.paidAt, "A data/hora do pagamento é requerida.");
     }
 
     public PaymentId id() {
@@ -31,7 +24,7 @@ public class Payment {
         return chargeId;
     }
 
-    public Instant paidAt() {
+    public TimeMillis paidAt() {
         return paidAt;
     }
 
@@ -49,7 +42,7 @@ public class Payment {
     public static class Builder {
         private PaymentId id;
         private ChargeId chargeId;
-        private Instant paidAt;
+        private TimeMillis paidAt;
 
         private Builder() {
         }
@@ -64,7 +57,7 @@ public class Payment {
             return this;
         }
 
-        public Builder withPaidAt(Instant paidAt) {
+        public Builder withPaidAt(TimeMillis paidAt) {
             this.paidAt = paidAt;
             return this;
         }

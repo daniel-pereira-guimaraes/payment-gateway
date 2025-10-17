@@ -2,9 +2,6 @@ package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import static com.danielpg.paymentgateway.fixture.ChargeFixture.CHARGE_ID;
 import static com.danielpg.paymentgateway.fixture.PaymentFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,17 +18,6 @@ public class PaymentTest {
         assertThat(payment.id(), is(PAYMENT_ID));
         assertThat(payment.chargeId(), is(CHARGE_ID));
         assertThat(payment.paidAt(), is(PAID_AT));
-    }
-
-    @Test
-    void mustTruncatePaidAtToMillis() {
-        var truncatedInstant = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-        var withNanoInstant = truncatedInstant.plusNanos(123L);
-
-        var payment = builder().withPaidAt(withNanoInstant).build();
-
-        assertThat(truncatedInstant, not(withNanoInstant));
-        assertThat(payment.paidAt(), is(truncatedInstant));
     }
 
     @Test
