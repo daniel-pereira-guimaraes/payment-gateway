@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: daniel
+      changes:
+        - comment: Empty!
