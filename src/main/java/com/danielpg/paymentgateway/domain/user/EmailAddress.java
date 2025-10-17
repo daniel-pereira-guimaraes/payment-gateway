@@ -2,6 +2,8 @@ package com.danielpg.paymentgateway.domain.user;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 
@@ -49,6 +51,11 @@ public class EmailAddress {
     public boolean equals(Object other) {
         return other instanceof EmailAddress otherEmail
                 && Objects.equals(value, otherEmail.value);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

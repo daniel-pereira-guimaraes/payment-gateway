@@ -1,6 +1,8 @@
 package com.danielpg.paymentgateway.domain.user;
 
 import com.danielpg.paymentgateway.domain.Validation;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.regex.Pattern;
 
@@ -41,4 +43,10 @@ public class PlainTextPassword {
     public HashedPassword toHashedPassword(PasswordHasher hasher) {
         return HashedPassword.of(hasher.hash(this));
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
 }

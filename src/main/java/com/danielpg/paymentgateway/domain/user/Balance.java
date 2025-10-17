@@ -1,6 +1,8 @@
 package com.danielpg.paymentgateway.domain.user;
 
 import com.danielpg.paymentgateway.domain.AbstractMoney;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -34,5 +36,11 @@ public class Balance extends AbstractMoney {
                 ? Optional.empty()
                 : Optional.of(new Balance(value));
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
 
 }

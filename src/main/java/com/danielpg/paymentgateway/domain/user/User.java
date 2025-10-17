@@ -2,6 +2,8 @@ package com.danielpg.paymentgateway.domain.user;
 
 import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.Validation;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 
@@ -81,6 +83,11 @@ public class User {
                 && Objects.equals(emailAddress, other.emailAddress)
                 && Objects.equals(hashedPassword, other.hashedPassword)
                 && Objects.equals(balance, other.balance);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public static Builder builder() {
