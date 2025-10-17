@@ -1,10 +1,13 @@
 package com.danielpg.paymentgateway.ut.domain.user;
 
+import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.user.*;
 import com.danielpg.paymentgateway.fixture.UserFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.math.BigDecimal;
 
 import static com.danielpg.paymentgateway.fixture.UserFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,6 +28,7 @@ class UserTest {
         assertThat(user.cpf(), is(CPF));
         assertThat(user.emailAddress(), is(EMAIL_ADDRESS));
         assertThat(user.hashedPassword(), is(HASHED_PASSWORD));
+        assertThat(user.balance(), is(BALANCE));
     }
 
     @Test
@@ -63,6 +67,17 @@ class UserTest {
         assertThat(exception.getMessage(), is("A senha é requerida."));
     }
 
+    @Test
+    void throwsExceptionWhenCreatingWithNullBalance() {
+        var builder = UserFixture.builder().withBalance(null);
+
+        var exception = assertThrows(
+                IllegalArgumentException.class,
+                builder::build
+        );
+
+        assertThat(exception.getMessage(), is("O saldo é requerido."));
+    }
 
     @Test
     void throwsExceptionWhenFinalizingWithNullId() {
@@ -134,6 +149,46 @@ class UserTest {
 
         assertThat(user1, not(user2));
     }
+
+    @Test
+    void increasesBalanceWhenValidAmount() {
+        var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
+
+        user.increaseBalance(Amount.of(BigDecimal.TWO));
+
+        assertThat(user.balance(), is(Balance.of(new BigDecimal(12))));
+    }
+
+    @Test
+    void decreasesBalanceWhenAmountIsLessThanBalance() {
+        var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
+
+        user.decreaseBalance(Amount.of(BigDecimal.TWO));
+
+        assertThat(user.balance(), is(Balance.of(new BigDecimal("8"))));
+    }
+
+    @Test
+    void decreasesBalanceWhenAmountEqualsBalance() {
+        var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
+
+        user.decreaseBalance(Amount.of(BigDecimal.TEN));
+
+        assertThat(user.balance(), is(Balance.of(BigDecimal.ZERO)));
+    }
+
+    @Test
+    void throwsExceptionWhenDecreasingMoreThanBalance() {
+        var user = builder().withBalance(Balance.of(BigDecimal.TEN)).build();
+
+        var exception = assertThrows(InsufficientBalanceException.class,
+                () -> user.decreaseBalance(Amount.of(new BigDecimal("10.01")))
+        );
+
+        assertThat(exception.getMessage(), is("Saldo insuficiente."));
+    }
+
+
 
 }
 

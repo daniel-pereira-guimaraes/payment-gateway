@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.domain.user;
 
+import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.Validation;
 
 import java.util.Objects;
@@ -11,6 +12,7 @@ public class User {
     private final Cpf cpf;
     private final EmailAddress emailAddress;
     private final HashedPassword hashedPassword;
+    private Balance balance;
 
     private User(Builder builder) {
         this.id = builder.id;
@@ -18,6 +20,7 @@ public class User {
         this.cpf = Validation.required(builder.cpf, "O CPF é requerido.");
         this.emailAddress = Validation.required(builder.emailAddress1, "O e-mail é requerido.");
         this.hashedPassword = Validation.required(builder.hashedPassword, "A senha é requerida.");
+        this.balance = Validation.required(builder.balance, "O saldo é requerido.");
     }
 
     public UserId id() {
@@ -40,6 +43,21 @@ public class User {
         return hashedPassword;
     }
 
+    public Balance balance() {
+        return balance;
+    }
+
+    public void increaseBalance(Amount amount) {
+        this.balance = this.balance.add(amount);
+    }
+
+    public void decreaseBalance(Amount amount) {
+        if (this.balance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException();
+        }
+        this.balance = this.balance.subtract(amount);
+    }
+
     public void finalizeCreation(UserId id) {
         if (this.id != null) {
             throw new IllegalStateException("A criação do usuário já foi finalizada.");
@@ -49,7 +67,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, cpf, emailAddress, hashedPassword);
+        return Objects.hash(id, name, cpf, emailAddress, hashedPassword, balance);
     }
 
     @Override
@@ -64,7 +82,8 @@ public class User {
                 && Objects.equals(name, other.name)
                 && Objects.equals(cpf, other.cpf)
                 && Objects.equals(emailAddress, other.emailAddress)
-                && Objects.equals(hashedPassword, other.hashedPassword);
+                && Objects.equals(hashedPassword, other.hashedPassword)
+                && Objects.equals(balance, other.balance);
     }
 
     public static Builder builder() {
@@ -77,6 +96,7 @@ public class User {
         private Cpf cpf;
         private EmailAddress emailAddress1;
         private HashedPassword hashedPassword;
+        private Balance balance;
 
         private Builder() {
         }
@@ -103,6 +123,11 @@ public class User {
 
         public Builder withHashedPassword(HashedPassword hashedPassword) {
             this.hashedPassword = hashedPassword;
+            return this;
+        }
+
+        public Builder withBalance(Balance balance) {
+            this.balance = balance;
             return this;
         }
 
