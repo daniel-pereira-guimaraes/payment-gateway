@@ -1,4 +1,6 @@
 databaseChangeLog:
+  - include:
+      file: classpath:/database/changelog.yml
   - changeSet:
       id: 1
       author: daniel
