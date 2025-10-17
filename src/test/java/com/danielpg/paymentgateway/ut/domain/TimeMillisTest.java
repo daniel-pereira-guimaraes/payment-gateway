@@ -107,4 +107,34 @@ class TimeMillisTest {
 
         assertThat(t2.isAfter(t1), is(true));
     }
+
+    @Test
+    void returnsNewTimeMillisWithAddedDays() {
+        var original = TimeMillis.of(1_000_000L);
+        var result = original.plusDays(1);
+        long expected = 1_000_000L + 24L * 60 * 60 * 1000;
+
+        assertThat(result.value(), is(expected));
+        assertThat(result, is(TimeMillis.of(expected)));
+    }
+
+    @Test
+    void returnsNewTimeMillisWithNegativeDays() {
+        var original = TimeMillis.of(1_000_000L);
+        var result = original.plusDays(-1);
+
+        long expected = 1_000_000L - 24L * 60 * 60 * 1000;
+        assertThat(result.value(), is(expected));
+        assertThat(result, is(TimeMillis.of(expected)));
+    }
+
+    @Test
+    void originalTimeMillisIsUnchanged() {
+        var original = TimeMillis.of(1_000_000L);
+        var result = original.plusDays(3);
+
+        assertThat(original.value(), is(1_000_000L));
+        assertThat(result.value(), is(1_000_000L + 3L * 24 * 60 * 60 * 1000));
+    }
+
 }

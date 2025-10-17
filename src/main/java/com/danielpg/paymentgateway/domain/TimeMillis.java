@@ -36,6 +36,11 @@ public class TimeMillis implements Comparable<TimeMillis> {
         return value > other.value;
     }
 
+    public TimeMillis plusDays(int days) {
+        long millisToAdd = days * 24L * 60 * 60 * 1000;
+        return new TimeMillis(this.value + millisToAdd);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);
