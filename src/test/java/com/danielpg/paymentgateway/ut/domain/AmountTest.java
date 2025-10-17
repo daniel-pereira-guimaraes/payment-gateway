@@ -58,4 +58,28 @@ class AmountTest {
         assertThat(exception.getMessage(), is("O valor deve ser de 0.01 a 999999999.99."));
     }
 
+    @Test
+    void addCreatesNewInstanceWithSum() {
+        var amount1 = Amount.of(new BigDecimal("10.00"));
+        var amount2 = Amount.of(new BigDecimal("2.00"));
+
+        var result = amount1.add(amount2);
+
+        assertThat(amount1.value(), is(new BigDecimal("10.00")));
+        assertThat(amount2.value(), is(new BigDecimal("2.00")));
+        assertThat(result.value(), is(new BigDecimal("12.00")));
+    }
+
+    @Test
+    void subtractCreatesNewInstanceWithDifference() {
+        var amount1 = Amount.of(new BigDecimal("10.00"));
+        var amount2 = Amount.of(new BigDecimal("2.00"));
+
+        var result = amount1.subtract(amount2);
+
+        assertThat(amount1.value(), is(new BigDecimal("10.00")));
+        assertThat(amount2.value(), is(new BigDecimal("2.00")));
+        assertThat(result.value(), is(new BigDecimal("8.00")));
+    }
+
 }

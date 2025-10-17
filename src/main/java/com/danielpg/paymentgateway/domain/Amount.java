@@ -12,12 +12,20 @@ public class Amount {
 
     private final BigDecimal value;
 
-    private Amount(BigDecimal value) {
+    protected Amount(BigDecimal value) {
         this.value = validate(value);
     }
 
     public BigDecimal value() {
         return value;
+    }
+
+    public Amount add(Amount amount) {
+        return new Amount(value.add(amount.value));
+    }
+
+    public Amount subtract(Amount amount) {
+        return new Amount(value.subtract(amount.value));
     }
 
     @Override
