@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge;
 
+import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.AppClock;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.User;

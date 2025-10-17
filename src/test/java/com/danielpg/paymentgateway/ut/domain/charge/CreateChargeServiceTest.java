@@ -4,7 +4,7 @@ import com.danielpg.paymentgateway.domain.AppClock;
 import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.CreateChargeService;
-import com.danielpg.paymentgateway.domain.charge.Amount;
+import com.danielpg.paymentgateway.domain.Amount;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserNotFoundException;

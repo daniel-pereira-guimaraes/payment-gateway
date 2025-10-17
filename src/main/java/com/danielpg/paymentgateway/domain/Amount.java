@@ -1,6 +1,4 @@
-package com.danielpg.paymentgateway.domain.charge;
-
-import com.danielpg.paymentgateway.domain.Validation;
+package com.danielpg.paymentgateway.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
