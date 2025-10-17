@@ -15,6 +15,7 @@ public class Charge {
     private final String description;
     private final TimeMillis createdAt;
     private final TimeMillis dueAt;
+    private ChargeStatus status;
 
     private Charge(Builder builder) {
         this.id = builder.id;
@@ -24,6 +25,7 @@ public class Charge {
         this.description = StringUtils.isBlank(builder.description) ? null : builder.description.trim();
         this.createdAt = Validation.required(builder.createdAt, "A data/hora de criação é requerida.");
         this.dueAt = validateDueAt(builder);
+        this.status = Validation.required(builder.status, "O status da cobrança é requerido.");
     }
 
     private static TimeMillis validateDueAt(Builder builder) {
@@ -62,11 +64,31 @@ public class Charge {
         return dueAt;
     }
 
+    public ChargeStatus status() {
+        return status;
+    }
+
     public void finalizeCreation(ChargeId id) {
         if (this.id != null) {
             throw new IllegalStateException("A criação da cobrança já foi finalizada.");
         }
         this.id = Validation.required(id, "O id é requerido.");
+    }
+
+    public void changeStatusToPaid() {
+        ensurePendingStatus();
+        this.status = ChargeStatus.PAID;
+    }
+
+    public void changeStatusToCanceled() {
+        ensurePendingStatus();
+        this.status = ChargeStatus.CANCELED;
+    }
+
+    private void ensurePendingStatus() {
+        if (status != ChargeStatus.PENDING) {
+            throw new IllegalStateException("A cobrança não está pendente.");
+        }
     }
 
     public static Builder builder() {
@@ -82,6 +104,7 @@ public class Charge {
         private String description;
         private TimeMillis createdAt;
         private TimeMillis dueAt;
+        private ChargeStatus status;
 
         private Builder() {
         }
@@ -118,6 +141,11 @@ public class Charge {
 
         public Builder withDueAt(TimeMillis dueAt) {
             this.dueAt = dueAt;
+            return this;
+        }
+
+        public Builder withStatus(ChargeStatus status) {
+            this.status = status;
             return this;
         }
 

@@ -4,6 +4,7 @@ import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
+import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.user.UserId;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class ChargeFixture {
                 .withAmount(AMOUNT)
                 .withDescription(DESCRIPTION)
                 .withCreatedAt(CREATED_AT)
-                .withDueAt(DUE_AT);
+                .withDueAt(DUE_AT)
+                .withStatus(ChargeStatus.PENDING);
     }
 }

@@ -2,10 +2,12 @@ package com.danielpg.paymentgateway.ut.domain.charge;
 
 import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
+import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;
 import io.micrometer.common.util.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -35,6 +37,7 @@ class ChargeTest {
         assertThat(charge.description(), is(expectedDescription));
         assertThat(charge.createdAt(), is(CREATED_AT));
         assertThat(charge.dueAt(), is(DUE_AT));
+        assertThat(charge.status(), is(ChargeStatus.PENDING));
     }
 
     @Test
@@ -139,5 +142,60 @@ class ChargeTest {
         assertThat(exception.getMessage(), is("A data/hora de vencimento deve ser posterior à data de criação."));
     }
 
+    @Test
+    void throwsExceptionIfStatusIsNull() {
+        var builder = builder().withStatus(null);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
 
-}
+        assertThat(exception.getMessage(), is("O status da cobrança é requerido."));
+    }
+
+    @Test
+    void changesStatusToPaidWhenPending() {
+        var charge = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PENDING)
+                .build();
+
+        charge.changeStatusToPaid();
+
+        assertThat(charge.status(), is(ChargeStatus.PAID));
+    }
+
+    @Test
+    void changesStatusToCanceledWhenPending() {
+        var charge = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PENDING)
+                .build();
+
+        charge.changeStatusToCanceled();
+
+        assertThat(charge.status(), is(ChargeStatus.CANCELED));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
+    void throwsExceptionWhenChangeToPaidAndNotPending(ChargeStatus initialStatus) {
+        var charge = ChargeFixture.builder()
+                .withStatus(initialStatus)
+                .build();
+
+        var exception = assertThrows(IllegalStateException.class,
+                charge::changeStatusToPaid
+        );
+
+        assertThat(exception.getMessage(), is("A cobrança não está pendente."));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
+    void throwsExceptionWhenChangeToCanceledAndNotPending(ChargeStatus initialStatus) {
+        var charge = ChargeFixture.builder()
+                .withStatus(initialStatus)
+                .build();
+
+        var exception = assertThrows(IllegalStateException.class,
+                charge::changeStatusToCanceled
+        );
+
+        assertThat(exception.getMessage(), is("A cobrança não está pendente."));
+    }}
