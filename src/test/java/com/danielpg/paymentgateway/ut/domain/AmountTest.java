@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.ut.domain;
 
 import com.danielpg.paymentgateway.domain.Amount;
+import com.danielpg.paymentgateway.domain.TimeMillis;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -9,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AmountTest {
@@ -80,6 +81,17 @@ class AmountTest {
         assertThat(amount1.value(), is(new BigDecimal("10.00")));
         assertThat(amount2.value(), is(new BigDecimal("2.00")));
         assertThat(result.value(), is(new BigDecimal("8.00")));
+    }
+
+    @Test
+    void compareToReturnsCorrectOrder() {
+        var amount1 = Amount.of(BigDecimal.TWO);
+        var amount2 = Amount.of(BigDecimal.TEN);
+        var amount3 = Amount.of(BigDecimal.TWO);
+
+        assertThat(amount1.compareTo(amount2), lessThan(0));
+        assertThat(amount2.compareTo(amount1), greaterThan(0));
+        assertThat(amount1.compareTo(amount3), is(0));
     }
 
 }

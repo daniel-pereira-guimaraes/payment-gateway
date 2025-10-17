@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 
-public class Amount {
+public class Amount implements Comparable<Amount> {
 
     private static final int SCALE = 2;
     private static final BigDecimal MIN_VALUE = new BigDecimal("0.01");
@@ -61,4 +61,8 @@ public class Amount {
                 : Optional.of(new Amount(value));
     }
 
+    @Override
+    public int compareTo(Amount other) {
+        return value.compareTo(other.value);
+    }
 }
