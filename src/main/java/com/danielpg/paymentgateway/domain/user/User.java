@@ -52,9 +52,6 @@ public class User {
     }
 
     public void decreaseBalance(PositiveMoney amount) {
-        if (this.balance.compareTo(amount) < 0) {
-            throw new InsufficientBalanceException();
-        }
         this.balance = this.balance.subtract(amount);
     }
 
