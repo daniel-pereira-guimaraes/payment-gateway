@@ -4,17 +4,21 @@ import com.danielpg.paymentgateway.domain.AppClock;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
+import com.danielpg.paymentgateway.domain.user.UserRepository;
 
 public class RegisterPaymentService {
 
     private final ChargeRepository chargeRepository;
+    private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final AppClock clock;
 
     public RegisterPaymentService(ChargeRepository chargeRepository,
+                                  UserRepository userRepository,
                                   PaymentRepository paymentRepository,
                                   AppClock clock) {
         this.chargeRepository = chargeRepository;
+        this.userRepository = userRepository;
         this.paymentRepository = paymentRepository;
         this.clock = clock;
     }
@@ -23,8 +27,18 @@ public class RegisterPaymentService {
         checkIfPaymentAlreadyExists(chargeId);
         var charge = getCharge(chargeId);
         var payment = buildPayment(charge);
+        updateBalances(charge);
         paymentRepository.save(payment);
         return payment;
+    }
+
+    private void updateBalances(Charge charge) {
+        var issuer = userRepository.getOrThrow(charge.issuerId());
+        var payer = userRepository.getOrThrow(charge.payerId());
+        issuer.increaseBalance(charge.amount());
+        payer.decreaseBalance(charge.amount());
+        userRepository.save(issuer);
+        userRepository.save(payer);
     }
 
     private void checkIfPaymentAlreadyExists(ChargeId chargeId) {

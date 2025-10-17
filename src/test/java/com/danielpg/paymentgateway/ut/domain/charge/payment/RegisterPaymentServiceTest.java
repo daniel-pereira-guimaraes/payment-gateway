@@ -1,14 +1,20 @@
 package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
 import com.danielpg.paymentgateway.domain.AppClock;
+import com.danielpg.paymentgateway.domain.PositiveMoney;
 import com.danielpg.paymentgateway.domain.charge.Charge;
+import com.danielpg.paymentgateway.domain.charge.ChargeNotFoundException;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
 import com.danielpg.paymentgateway.domain.charge.payment.RegisterPaymentService;
 import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.user.*;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;
+import com.danielpg.paymentgateway.fixture.UserFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -18,57 +24,112 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class RegisterPaymentServiceTest {
 
     private ChargeRepository chargeRepository;
+    private UserRepository userRepository;
     private PaymentRepository paymentRepository;
-    private AppClock clock;
     private RegisterPaymentService service;
 
-    private final Charge charge = ChargeFixture.builder().build();
+    private static final TimeMillis NOW = TimeMillis.now();
+
+    private static final Charge CHARGE = ChargeFixture.builder()
+            .withAmount(PositiveMoney.of(BigDecimal.ONE))
+            .build();
+
+    private static final User ISSUER = UserFixture.builder()
+            .withId(CHARGE.issuerId())
+            .withBalance(Balance.of(BigDecimal.TEN))
+            .build();
+
+    private static final User PAYER = UserFixture.builder()
+            .withId(CHARGE.payerId())
+            .withBalance(Balance.of(BigDecimal.TEN))
+            .build();
 
     @BeforeEach
     void setup() {
+        var clock = mock(AppClock.class);
         chargeRepository = mock(ChargeRepository.class);
+        userRepository = mock(UserRepository.class);
         paymentRepository = mock(PaymentRepository.class);
-        clock = mock(AppClock.class);
-        service = new RegisterPaymentService(chargeRepository, paymentRepository, clock);
+        service = new RegisterPaymentService(chargeRepository, userRepository, paymentRepository, clock);
+
+        when(paymentRepository.exists(CHARGE.id())).thenReturn(false);
+        when(chargeRepository.getOrThrow(CHARGE.id())).thenReturn(CHARGE);
+        when(userRepository.getOrThrow(ISSUER.id())).thenReturn(ISSUER);
+        when(userRepository.getOrThrow(PAYER.id())).thenReturn(PAYER);
+        when(clock.now()).thenReturn(NOW);
     }
 
     @Test
     void registerPaymentWhenChargeHasNoExistingPayment() {
-        when(paymentRepository.exists(charge.id())).thenReturn(false);
-        when(chargeRepository.getOrThrow(charge.id())).thenReturn(charge);
-        when(clock.now()).thenReturn(TimeMillis.of(1500L));
-
-        var payment = service.registerPayment(charge.id());
+        var payment = service.registerPayment(CHARGE.id());
 
         assertThat(payment, notNullValue());
-        assertThat(payment.chargeId(), is(charge.id()));
-        assertThat(payment.paidAt().value(), is(1500L));
+        assertThat(payment.chargeId(), is(CHARGE.id()));
+        assertThat(payment.paidAt(),  is(NOW));
+        assertThat(ISSUER.balance().value(), is(new BigDecimal("11.00")));
+        assertThat(PAYER.balance().value(), is(new BigDecimal("9.00")));
         verify(paymentRepository).save(payment);
+        verify(userRepository).save(ISSUER);
+        verify(userRepository).save(PAYER);
     }
 
     @Test
     void throwsExceptionWhenPaymentAlreadyExists() {
-        when(paymentRepository.exists(charge.id())).thenReturn(true);
+        when(paymentRepository.exists(CHARGE.id())).thenReturn(true);
 
         var exception = assertThrows(IllegalStateException.class,
-                () -> service.registerPayment(charge.id())
+                () -> service.registerPayment(CHARGE.id())
         );
 
-        assertThat(exception.getMessage(), is("Já existe um pagamento para esta cobrança: " + charge.id().value()));
+        assertThat(exception.getMessage(), is("Já existe um pagamento para esta cobrança: " + CHARGE.id().value()));
         verifyNoInteractions(chargeRepository);
         verify(paymentRepository, never()).save(any());
     }
 
     @Test
-    void registerPaymentWithCurrentTimestampFromClock() {
-        when(paymentRepository.exists(charge.id())).thenReturn(false);
-        when(chargeRepository.getOrThrow(charge.id())).thenReturn(charge);
-        var now = TimeMillis.of(123456789L);
-        when(clock.now()).thenReturn(now);
+    void throwsExceptionWhenChargeNotFound() {
+        when(chargeRepository.getOrThrow(CHARGE.id())).thenThrow(ChargeNotFoundException.class);
 
-        var payment = service.registerPayment(charge.id());
+        assertThrows(ChargeNotFoundException.class,
+                () -> service.registerPayment(CHARGE.id())
+        );
 
-        assertThat(payment.paidAt(), is(now));
+        verify(paymentRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
     }
 
+    @Test
+    void throwExceptionWhenIssuerNotFound() {
+        when(userRepository.getOrThrow(ISSUER.id())).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, () -> service.registerPayment(CHARGE.id()));
+
+        verify(paymentRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void throwExceptionWhenPayerNotFound() {
+        when(userRepository.getOrThrow(PAYER.id())).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, () -> service.registerPayment(CHARGE.id()));
+
+        verify(paymentRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void throwsExceptionWhenPayerHasInsufficientBalance() {
+        var lowBalancePayer = UserFixture.builder()
+                .withId(CHARGE.payerId())
+                .withBalance(Balance.of(BigDecimal.ZERO))
+                .build();
+
+        when(userRepository.getOrThrow(PAYER.id())).thenReturn(lowBalancePayer);
+
+        assertThrows(InsufficientBalanceException.class, () -> service.registerPayment(CHARGE.id()));
+
+        verify(paymentRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
 }
