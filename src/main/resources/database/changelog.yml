@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: daniel
+      changes:
+        - createTable:
+            tableName: tb_user
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(70)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cpf
+                  type: CHAR(11)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email_address
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: hashed_password
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: DECIMAL(9,2)
+                  constraints:
+                    nullable: false
