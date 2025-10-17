@@ -28,6 +28,8 @@ public class RegisterPaymentService {
         var charge = getCharge(chargeId);
         var payment = buildPayment(charge);
         updateBalances(charge);
+        charge.changeStatusToPaid();
+        chargeRepository.save(charge);
         paymentRepository.save(payment);
         return payment;
     }

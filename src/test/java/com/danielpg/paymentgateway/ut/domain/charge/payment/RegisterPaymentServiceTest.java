@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static com.danielpg.paymentgateway.domain.charge.ChargeStatus.PAID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -66,9 +67,11 @@ class RegisterPaymentServiceTest {
         assertThat(payment, notNullValue());
         assertThat(payment.chargeId(), is(CHARGE.id()));
         assertThat(payment.paidAt(),  is(NOW));
+        assertThat(CHARGE.status(), is(PAID));
         assertThat(ISSUER.balance().value(), is(new BigDecimal("11.00")));
         assertThat(PAYER.balance().value(), is(new BigDecimal("9.00")));
         verify(paymentRepository).save(payment);
+        verify(chargeRepository).save(CHARGE);
         verify(userRepository).save(ISSUER);
         verify(userRepository).save(PAYER);
     }
@@ -84,6 +87,8 @@ class RegisterPaymentServiceTest {
         assertThat(exception.getMessage(), is("Já existe um pagamento para esta cobrança: " + CHARGE.id().value()));
         verifyNoInteractions(chargeRepository);
         verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -95,6 +100,7 @@ class RegisterPaymentServiceTest {
         );
 
         verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
 
@@ -105,6 +111,7 @@ class RegisterPaymentServiceTest {
         assertThrows(UserNotFoundException.class, () -> service.registerPayment(CHARGE.id()));
 
         verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
 
@@ -115,6 +122,7 @@ class RegisterPaymentServiceTest {
         assertThrows(UserNotFoundException.class, () -> service.registerPayment(CHARGE.id()));
 
         verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
 
@@ -130,6 +138,7 @@ class RegisterPaymentServiceTest {
         assertThrows(InsufficientBalanceException.class, () -> service.registerPayment(CHARGE.id()));
 
         verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
 }
