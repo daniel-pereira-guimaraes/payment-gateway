@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.fixture;
 
+import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.Amount;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
@@ -14,6 +15,8 @@ public class ChargeFixture {
     public static final UserId PAYER_ID = UserId.of(789L);
     public static final Amount AMOUNT = Amount.of(BigDecimal.TEN);
     public static final String DESCRIPTION = "Charge description";
+    public static final TimeMillis CREATED_AT = TimeMillis.of(1L);
+    public static final TimeMillis DUE_AT = TimeMillis.of(2L);
 
     private ChargeFixture() {
     }
@@ -24,6 +27,8 @@ public class ChargeFixture {
                 .withIssuerId(ISSUER_ID)
                 .withPayerId(PAYER_ID)
                 .withAmount(AMOUNT)
-                .withDescription(DESCRIPTION);
+                .withDescription(DESCRIPTION)
+                .withCreatedAt(CREATED_AT)
+                .withDueAt(DUE_AT);
     }
 }

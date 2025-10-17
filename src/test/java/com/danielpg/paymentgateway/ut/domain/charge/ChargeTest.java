@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.charge;
 
+import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;
 import io.micrometer.common.util.StringUtils;
@@ -9,6 +10,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.danielpg.paymentgateway.fixture.ChargeFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,7 +23,7 @@ class ChargeTest {
     void builderCreatesChargeWithAllFields(String description) {
         var expectedDescription = StringUtils.isBlank(description) ? null : description.trim();
 
-        var charge = ChargeFixture.builder()
+        var charge = builder()
                 .withDescription(description)
                 .build();
 
@@ -31,11 +33,13 @@ class ChargeTest {
         assertThat(charge.payerId(), is(ChargeFixture.PAYER_ID));
         assertThat(charge.amount(), is(ChargeFixture.AMOUNT));
         assertThat(charge.description(), is(expectedDescription));
+        assertThat(charge.createdAt(), is(CREATED_AT));
+        assertThat(charge.dueAt(), is(DUE_AT));
     }
 
     @Test
     void finalizeCreationSetsIdWhenNotSet() {
-        var charge = ChargeFixture.builder().withId(null).build();
+        var charge = builder().withId(null).build();
         var newId = ChargeId.of(999L);
 
         charge.finalizeCreation(newId);
@@ -45,7 +49,7 @@ class ChargeTest {
 
     @Test
     void finalizeCreationThrowsExceptionIfIdAlreadySet() {
-        var charge = ChargeFixture.builder().build();
+        var charge = builder().build();
         var exception = assertThrows(IllegalStateException.class, () ->
                 charge.finalizeCreation(ChargeId.of(123L))
         );
@@ -56,7 +60,7 @@ class ChargeTest {
     @ParameterizedTest
     @NullSource
     void finalizeCreationThrowsExceptionIfIdIsNull(ChargeId nullId) {
-        var charge = ChargeFixture.builder().withId(null).build();
+        var charge = builder().withId(null).build();
 
         var exception = assertThrows(IllegalArgumentException.class, () ->
                 charge.finalizeCreation(nullId)
@@ -67,7 +71,7 @@ class ChargeTest {
 
     @Test
     void throwsExceptionIfIssuerIdIsNull() {
-        var builder = ChargeFixture.builder().withIssuerId(null);
+        var builder = builder().withIssuerId(null);
         var exception = assertThrows(IllegalArgumentException.class, builder::build);
 
         assertThat(exception.getMessage(), is("O emitente é requerido."));
@@ -75,7 +79,7 @@ class ChargeTest {
 
     @Test
     void throwsExceptionIfPayerIdIsNull() {
-        var builder = ChargeFixture.builder().withPayerId(null);
+        var builder = builder().withPayerId(null);
         var exception = assertThrows(IllegalArgumentException.class, builder::build);
 
         assertThat(exception.getMessage(), is("O pagador é requerido."));
@@ -83,7 +87,7 @@ class ChargeTest {
 
     @Test
     void throwsExceptionIfAmountIsNull() {
-        var builder = ChargeFixture.builder().withAmount(null);
+        var builder = builder().withAmount(null);
         var exception = assertThrows(IllegalArgumentException.class, builder::build);
 
         assertThat(exception.getMessage(), is("O valor é requerido."));
@@ -91,9 +95,49 @@ class ChargeTest {
 
     @Test
     void descriptionIsTrimmed() {
-        var builder = ChargeFixture.builder().withDescription("   some description   ");
+        var builder = builder().withDescription("   some description   ");
         var charge = builder.build();
 
         assertThat(charge.description(), is("some description"));
     }
+
+    @Test
+    void throwsExceptionIfCreatedAtIsNull() {
+        var builder = builder().withCreatedAt(null);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        assertThat(exception.getMessage(), is("A data/hora de criação é requerida."));
+    }
+
+    @Test
+    void throwsExceptionIfDueAtIsNull() {
+        var builder = builder().withDueAt(null);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        assertThat(exception.getMessage(), is("A data/hora de vencimento é requerida."));
+    }
+
+    @Test
+    void throwsExceptionWhenDueAtIsBeforeCreatedAt() {
+        var builder = builder()
+                .withCreatedAt(TimeMillis.of(10L))
+                .withDueAt(TimeMillis.of(9L));
+
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        assertThat(exception.getMessage(), is("A data/hora de vencimento deve ser posterior à data de criação."));
+    }
+
+    @Test
+    void throwsExceptionWhenDueAtEqualsCreatedAt() {
+        var builder = builder()
+                .withCreatedAt(TimeMillis.of(10L))
+                .withDueAt(TimeMillis.of(10L));
+
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        assertThat(exception.getMessage(), is("A data/hora de vencimento deve ser posterior à data de criação."));
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge;
 
+import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
 import io.micrometer.common.util.StringUtils;
@@ -11,6 +12,8 @@ public class Charge {
     private final UserId payerId;
     private final Amount amount;
     private final String description;
+    private final TimeMillis createdAt;
+    private final TimeMillis dueAt;
 
     private Charge(Builder builder) {
         this.id = builder.id;
@@ -18,6 +21,16 @@ public class Charge {
         this.payerId = Validation.required(builder.payerId, "O pagador é requerido.");
         this.amount = Validation.required(builder.amount, "O valor é requerido.");
         this.description = StringUtils.isBlank(builder.description) ? null : builder.description.trim();
+        this.createdAt = Validation.required(builder.createdAt, "A data/hora de criação é requerida.");
+        this.dueAt = validateDueAt(builder);
+    }
+
+    private static TimeMillis validateDueAt(Builder builder) {
+        Validation.required(builder.dueAt, "A data/hora de vencimento é requerida.");
+        if (builder.dueAt.compareTo(builder.createdAt) <= 0) {
+            throw new IllegalArgumentException("A data/hora de vencimento deve ser posterior à data de criação.");
+        }
+        return builder.dueAt;
     }
 
     public ChargeId id() {
@@ -40,6 +53,14 @@ public class Charge {
         return description;
     }
 
+    public TimeMillis createdAt() {
+        return createdAt;
+    }
+
+    public TimeMillis dueAt() {
+        return dueAt;
+    }
+
     public void finalizeCreation(ChargeId id) {
         if (this.id != null) {
             throw new IllegalStateException("A criação da cobrança já foi finalizada.");
@@ -58,6 +79,8 @@ public class Charge {
         private UserId payerId;
         private Amount amount;
         private String description;
+        private TimeMillis createdAt;
+        private TimeMillis dueAt;
 
         private Builder() {
         }
@@ -84,6 +107,16 @@ public class Charge {
 
         public Builder withDescription(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder withCreatedAt(TimeMillis createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder withDueAt(TimeMillis dueAt) {
+            this.dueAt = dueAt;
             return this;
         }
 
