@@ -19,6 +19,9 @@ public class Balance extends AbstractMoney {
     }
 
     public Balance subtract(AbstractMoney subtractValue) {
+        if (compareTo(subtractValue) < 0) {
+            throw new InsufficientBalanceException();
+        }
         return new Balance(value().subtract(subtractValue.value()));
     }
 
