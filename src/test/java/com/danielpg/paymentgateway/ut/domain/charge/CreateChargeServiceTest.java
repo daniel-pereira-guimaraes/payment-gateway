@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static com.danielpg.paymentgateway.domain.charge.ChargeStatus.PENDING;
 import static com.danielpg.paymentgateway.domain.user.UserNotFoundException.USER_WITH_CPF_NOT_FOUND;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -61,6 +62,7 @@ class CreateChargeServiceTest {
         assertThat(charge.description(), is(DESCRIPTION));
         assertThat(charge.createdAt(), is(NOW));
         assertThat(charge.dueAt(), is(NOW.plusDays(30)));
+        assertThat(charge.status(), is(PENDING));
         verify(chargeRepository).save(charge);
     }
 

@@ -41,6 +41,7 @@ public class CreateChargeService {
                 .withDescription(request.description)
                 .withCreatedAt(now)
                 .withDueAt(now.plusDays(DUE_IN_DAYS))
+                .withStatus(ChargeStatus.PENDING)
                 .build();
     }
 
