@@ -4,7 +4,7 @@ import com.danielpg.paymentgateway.domain.AbstractNotFoundException;
 
 public class UserNotFoundException extends AbstractNotFoundException {
 
-    protected UserNotFoundException(Cpf cpf) {
+    public UserNotFoundException(Cpf cpf) {
         super("Usuário com CPF %s não encontrado.".formatted(cpf.value()));
     }
 }
