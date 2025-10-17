@@ -1,7 +1,10 @@
 package com.danielpg.paymentgateway.domain.user;
 
 import io.micrometer.common.util.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Cpf {
@@ -67,4 +70,23 @@ public class Cpf {
         return value != null
                 && value.chars().distinct().count() > 1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cpf cpf = (Cpf) o;
+        return Objects.equals(value, cpf.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
 }
