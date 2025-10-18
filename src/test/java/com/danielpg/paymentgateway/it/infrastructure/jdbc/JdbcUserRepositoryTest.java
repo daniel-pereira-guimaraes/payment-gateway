@@ -28,6 +28,16 @@ class JdbcUserRepositoryTest extends IntegrationTestBase {
     }
 
     @Test
+    void getOrThrowByEmailReturnsUserWhenFound() {
+        var user = builder().withId(null).build();
+
+        repository.save(user);
+
+        var result = repository.getOrThrow(user.emailAddress());
+        assertThat(result, is(user));
+    }
+
+    @Test
     void getByIdReturnsEmptyWhenNotFound() {
         var id = UserId.of(999L);
 
@@ -45,6 +55,17 @@ class JdbcUserRepositoryTest extends IntegrationTestBase {
         );
 
         assertThat(exception.getMessage(), is("Usuário com ID 999 não encontrado."));
+    }
+
+    @Test
+    void getOrThrowByEmailThrowsExceptionWhenNotFound() {
+        var emailAddress = EmailAddress.of("x@y.com");
+
+        var exception = assertThrows(UserNotFoundException.class,
+                () -> repository.getOrThrow(emailAddress)
+        );
+
+        assertThat(exception.getMessage(), is("Usuário com email x@y.com não encontrado."));
     }
 
     @Test

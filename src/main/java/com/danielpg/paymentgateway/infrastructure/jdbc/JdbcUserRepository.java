@@ -50,6 +50,13 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public User getOrThrow(EmailAddress emailAddress) {
+        var params = Map.of("email_address", emailAddress.value());
+        return queryForOptional(SQL_SELECT_BY_ID, params)
+                .orElseThrow(() -> new UserNotFoundException(emailAddress));
+    }
+
+    @Override
     public void save(User user) {
         if (user.id() == null) {
             var keyHolder = new CustomKeyHolder();

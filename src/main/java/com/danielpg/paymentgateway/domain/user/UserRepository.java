@@ -6,5 +6,6 @@ public interface UserRepository {
     Optional<User> get(Cpf cpf);
     Optional<User> get(UserId id);
     User getOrThrow(UserId id);
+    User getOrThrow(EmailAddress emailAddress);
     void save(User user);
 }
