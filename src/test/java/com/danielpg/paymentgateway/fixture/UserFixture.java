@@ -10,7 +10,8 @@ public class UserFixture {
     public static final Cpf CPF = Cpf.of("00000000191");
     public static final EmailAddress EMAIL_ADDRESS = EmailAddress.of("a@b.com");
     public static final PersonName PERSON_NAME = PersonName.of("DANIEL");
-    public static final HashedPassword HASHED_PASSWORD = HashedPassword.of("hash");
+    public static final PlainTextPassword PLAIN_TEXT_PASSWORD = PlainTextPassword.of("Password!12345");
+    public static final HashedPassword HASHED_PASSWORD = HashedPassword.of("hashPassword");
     public static final Balance BALANCE = Balance.of(BigDecimal.TEN.add(BigDecimal.TWO));
 
     private UserFixture() {
