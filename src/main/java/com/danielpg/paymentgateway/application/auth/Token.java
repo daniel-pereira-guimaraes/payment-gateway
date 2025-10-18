@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.infrastructure.security;
+package com.danielpg.paymentgateway.application.auth;
 
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.user.User;

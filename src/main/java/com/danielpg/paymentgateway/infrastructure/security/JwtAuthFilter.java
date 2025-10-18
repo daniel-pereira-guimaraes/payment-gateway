@@ -3,6 +3,7 @@ package com.danielpg.paymentgateway.infrastructure.security;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.danielpg.paymentgateway.application.auth.Token;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.micrometer.common.lang.NonNull;

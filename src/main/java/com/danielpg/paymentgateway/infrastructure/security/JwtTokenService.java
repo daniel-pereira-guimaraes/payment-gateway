@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.infrastructure.security;
 
+import com.danielpg.paymentgateway.application.auth.Token;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.user.EmailAddress;
 import com.danielpg.paymentgateway.domain.user.UserRepository;
