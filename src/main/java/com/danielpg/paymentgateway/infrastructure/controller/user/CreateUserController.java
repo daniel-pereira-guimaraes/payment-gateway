@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.infrastructure.controller;
+package com.danielpg.paymentgateway.infrastructure.controller.user;
 
 import com.danielpg.paymentgateway.application.user.CreateUserUseCase;
 import com.danielpg.paymentgateway.domain.shared.DataMasking;
