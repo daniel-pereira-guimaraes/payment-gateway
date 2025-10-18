@@ -136,7 +136,7 @@ class RegisterPaymentServiceTest {
     void throwsExceptionWhenPayerHasInsufficientBalance() {
         var lowBalancePayer = UserFixture.builder()
                 .withId(CHARGE.payerId())
-                .withBalance(Balance.of(BigDecimal.ZERO))
+                .withBalance(Balance.ZERO)
                 .build();
 
         when(userRepository.getOrThrow(PAYER.id())).thenReturn(lowBalancePayer);
