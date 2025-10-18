@@ -51,6 +51,11 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public User getOrThrow(Cpf cpf) {
+        return get(cpf).orElseThrow(() -> new UserNotFoundException(cpf));
+    }
+
+    @Override
     public User getOrThrow(EmailAddress emailAddress) {
         var params = Map.of("email_address", emailAddress.value());
         return queryForOptional(SQL_SELECT_BY_EMAIL, params)

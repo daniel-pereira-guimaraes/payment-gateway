@@ -20,7 +20,6 @@ class JdbcUserRepositoryTest extends IntegrationTestBase {
     @Test
     void getByIdReturnsUserWhenFound() {
         var user = builder().withId(null).build();
-
         repository.save(user);
 
         var result = repository.get(user.id()).orElseThrow();
@@ -28,9 +27,17 @@ class JdbcUserRepositoryTest extends IntegrationTestBase {
     }
 
     @Test
+    void getOrThrowByCpfReturnsUserWhenFound() {
+        var user = builder().withId(null).build();
+        repository.save(user);
+
+        var result = repository.getOrThrow(user.cpf());
+        assertThat(result, is(user));
+    }
+
+    @Test
     void getOrThrowByEmailReturnsUserWhenFound() {
         var user = builder().withId(null).build();
-
         repository.save(user);
 
         var result = repository.getOrThrow(user.emailAddress());
