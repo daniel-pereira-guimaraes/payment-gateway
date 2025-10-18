@@ -32,7 +32,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher(new OrRequestMatcher(
                         new AntPathRequestMatcher("/ping", "GET"),
-                        new AntPathRequestMatcher("/users", "POST")
+                        new AntPathRequestMatcher("/users", "POST"),
+                        new AntPathRequestMatcher("/auth/login", "POST")
                 ))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
