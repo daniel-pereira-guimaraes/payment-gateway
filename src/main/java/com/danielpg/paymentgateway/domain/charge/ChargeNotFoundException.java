@@ -4,7 +4,7 @@ import com.danielpg.paymentgateway.domain.AbstractNotFoundException;
 
 public class ChargeNotFoundException extends AbstractNotFoundException {
 
-    protected ChargeNotFoundException(Charge charge) {
-        super("Cobrança não encontrada: " + charge.id().value());
+    public ChargeNotFoundException(ChargeId id) {
+        super("Cobrança não encontrada: " + id.value());
     }
 }

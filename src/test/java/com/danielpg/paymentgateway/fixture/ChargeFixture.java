@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 
 public class ChargeFixture {
 
-    public static final ChargeId CHARGE_ID = ChargeId.of(321L);
-    public static final UserId ISSUER_ID = UserId.of(456L);
-    public static final UserId PAYER_ID = UserId.of(789L);
+    public static final ChargeId CHARGE_ID = ChargeId.of(1L);
+    public static final UserId ISSUER_ID = UserId.of(1L);
+    public static final UserId PAYER_ID = UserId.of(2L);
     public static final PositiveMoney AMOUNT = PositiveMoney.of(BigDecimal.TEN);
     public static final String DESCRIPTION = "Charge description";
     public static final TimeMillis CREATED_AT = TimeMillis.of(1L);
