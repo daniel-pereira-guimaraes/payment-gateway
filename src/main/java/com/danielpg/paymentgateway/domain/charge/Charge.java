@@ -6,6 +6,8 @@ import com.danielpg.paymentgateway.domain.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
 import io.micrometer.common.util.StringUtils;
 
+import java.util.Objects;
+
 public class Charge {
 
     private ChargeId id;
@@ -89,6 +91,29 @@ public class Charge {
         if (status != ChargeStatus.PENDING) {
             throw new IllegalStateException("A cobrança não está pendente.");
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, issuerId, payerId, amount, description, createdAt, dueAt, status);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        return equalsCasted((Charge) other);
+    }
+
+    private boolean equalsCasted(Charge other) {
+        return Objects.equals(id, other.id)
+                && Objects.equals(issuerId, other.issuerId)
+                && Objects.equals(payerId, other.payerId)
+                && Objects.equals(amount, other.amount)
+                && Objects.equals(description, other.description)
+                && Objects.equals(createdAt, other.createdAt)
+                && Objects.equals(dueAt, other.dueAt)
+                && status == other.status;
     }
 
     public static Builder builder() {
