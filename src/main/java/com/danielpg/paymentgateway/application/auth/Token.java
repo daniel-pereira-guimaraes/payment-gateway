@@ -66,6 +66,7 @@ public class Token {
         private Builder() {
         }
 
+        //TODO: padronizar nomes de métodos como withXXX
         public Builder rawToken(String rawToken) {
             this.rawToken = rawToken;
             return this;
