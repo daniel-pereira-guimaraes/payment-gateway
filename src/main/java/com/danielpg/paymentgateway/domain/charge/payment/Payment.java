@@ -4,6 +4,8 @@ import com.danielpg.paymentgateway.domain.TimeMillis;
 import com.danielpg.paymentgateway.domain.Validation;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 
+import java.util.Objects;
+
 public class Payment {
 
     private PaymentId id;
@@ -33,6 +35,19 @@ public class Payment {
             throw new IllegalStateException("A criação do pagamento já foi finalizada.");
         }
         this.id = Validation.required(id, "O id é requerido.");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return Objects.equals(id, payment.id) && Objects.equals(chargeId, payment.chargeId) && Objects.equals(paidAt, payment.paidAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, chargeId, paidAt);
     }
 
     public static Builder builder() {
