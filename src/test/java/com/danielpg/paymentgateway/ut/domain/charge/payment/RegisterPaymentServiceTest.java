@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentAuthorizer;
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentNotAuthorizedException;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.charge.Charge;
@@ -148,10 +149,10 @@ class RegisterPaymentServiceTest {
     }
 
     @Test
-    void propagatesPaymentAuthorizerException() {
-        doThrow(new RuntimeException()).when(paymentAuthorizer).authorizePayment(CHARGE);
+    void propagatesPaymentNotAuthorizedException() {
+        doThrow(new PaymentNotAuthorizedException()).when(paymentAuthorizer).authorizePayment(CHARGE);
 
-        assertThrows(RuntimeException.class,
+        assertThrows(PaymentNotAuthorizedException.class,
                 () -> service.registerPayment(CHARGE.id())
         );
 
