@@ -1,8 +1,10 @@
 package com.danielpg.paymentgateway.infrastructure.security;
 
+import com.danielpg.paymentgateway.application.auth.AppTokenService;
 import com.danielpg.paymentgateway.application.auth.Token;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.user.EmailAddress;
+import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,7 +17,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Service
-public class JwtTokenService {
+public class JwtTokenService implements AppTokenService {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -31,8 +33,12 @@ public class JwtTokenService {
         this.clock = appClock;
     }
 
-    public String generate(EmailAddress emailAddress) {
-        return buildRawToken(emailAddress, calculateExpiration());
+    @Override
+    public Token generate(User user) {
+        var expiration = calculateExpiration();
+        var rawToken = buildRawToken(user.emailAddress(), expiration);
+        return buildToken(user, rawToken, expiration);
+
     }
 
     private long calculateExpiration() {
@@ -47,17 +53,21 @@ public class JwtTokenService {
                 .compact();
     }
 
-    public Token decode(String rawToken) {
-        var claims = parseClaims(rawToken);
-        var email = EmailAddress.of(claims.getSubject());
-        var expiration = claims.getExpiration().getTime();
-        var user = userRepository.getOrThrow(email);
+    private Token buildToken(User user, String rawToken, long expiration) {
         return Token.builder()
                 .rawToken(rawToken)
                 .user(user)
                 .expiration(expiration)
                 .clock(clock)
                 .build();
+    }
+
+    public Token decode(String rawToken) {
+        var claims = parseClaims(rawToken);
+        var email = EmailAddress.of(claims.getSubject());
+        var expiration = claims.getExpiration().getTime();
+        var user = userRepository.getOrThrow(email);
+        return buildToken(user, rawToken, expiration);
     }
 
     private Claims parseClaims(String token) {
