@@ -1,3 +1,3 @@
 id;name;cpf;email_address;hashed_password;balance
-1;João Silva;12312312387;joao.silva@email.com;$2a$10$abc123xyz;1000.00
+1;João Silva;12312312387;joao.silva@email.com;$2a$10$4LNeRTVaYHFqMEcpK6wV8.DPpiuNpT4DjXGzQnCZB/bBX6u1s9F3y;1000.00
 2;Maria Oliveira;32132132178;maria.oliveira@email.com;$2a$10$xyz789abc;5000.00
