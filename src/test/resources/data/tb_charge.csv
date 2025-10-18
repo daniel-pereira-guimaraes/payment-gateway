@@ -1,0 +1,4 @@
+id;issuer_id;payer_id;amount;description;created_at;due_at;status
+1;1;2;150.00;Serviço de limpeza;1700000000;1700003600;PENDING
+2;2;1;250.50;Compra de material;1700007200;1700010800;PAID
+3;1;2;500.00;Assinatura mensal;1700014400;1700018000;CANCELED
