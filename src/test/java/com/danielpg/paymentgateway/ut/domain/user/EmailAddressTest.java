@@ -2,6 +2,7 @@ package com.danielpg.paymentgateway.ut.domain.user;
 
 import com.danielpg.paymentgateway.domain.user.EmailAddress;
 import com.danielpg.paymentgateway.domain.user.InvalidEmailAddressException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -32,6 +33,20 @@ public class EmailAddressTest {
     })
     void throwsExceptionWhenCreatingWithInvalidEmailAddress(String address) {
         assertThrows(InvalidEmailAddressException.class, () -> EmailAddress.of(address));
+    }
+
+    @Test
+    void returnsEmptyOptionalWhenAddressIsNull() {
+        var result = EmailAddress.ofNullable(null);
+        assertThat(result.isEmpty(), is(true));
+    }
+
+    @Test
+    void returnsEmailAddressWhenAddressIsNotNull() {
+        var result = EmailAddress.ofNullable("user@example.com");
+
+        assertThat(result.isPresent(), is(true));
+        assertThat(result.get().value(), is("user@example.com"));
     }
 
 }

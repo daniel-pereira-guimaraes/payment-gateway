@@ -1,11 +1,14 @@
 package com.danielpg.paymentgateway.domain.user;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import liquibase.util.StringUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class EmailAddress {
 
@@ -18,6 +21,12 @@ public class EmailAddress {
 
     public static EmailAddress of(String address) {
         return new EmailAddress(address);
+    }
+
+    public static Optional<EmailAddress> ofNullable(String address) {
+        return StringUtils.isBlank(address)
+                ? Optional.empty()
+                : Optional.of(new EmailAddress(address));
     }
 
     private void validate(String address) {
