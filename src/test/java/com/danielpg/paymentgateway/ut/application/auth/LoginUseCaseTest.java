@@ -108,11 +108,12 @@ class LoginUseCaseTest {
     }
 
     @Test
-    void throwsInvalidCredentialsWhenNoEmailOrCpfProvided() {
+    void throwsIllegalArgumentExceptionWhenNoEmailOrCpfProvided() {
         var request = new LoginUseCase.Request(null, null, PLAIN_TEXT_PASSWORD);
 
-        assertThrows(InvalidCredentialsException.class, () -> useCase.login(request));
+        var exception = assertThrows(IllegalArgumentException.class, () -> useCase.login(request));
 
+        assertThat(exception.getMessage(), is("Obrigatório informar CPF ou e-mail."));
         verifyNoInteractions(userRepository, passwordHasher, tokenService);
     }
 

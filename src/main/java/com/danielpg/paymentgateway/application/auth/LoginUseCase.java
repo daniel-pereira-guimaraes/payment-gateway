@@ -23,7 +23,7 @@ public class LoginUseCase {
     public Token login(Request request) {
         try {
             return tryLogin(request);
-        } catch (UserNotFoundException | InvalidCredentialsException e) {
+        } catch (IllegalArgumentException | InvalidCredentialsException e) {
             throw e;
         } catch (RuntimeException e) {
             throw new InvalidCredentialsException();
@@ -36,7 +36,7 @@ public class LoginUseCase {
         } else if (request.emailAddress != null) {
             return tryLoginByEmail(request);
         }
-        throw new InvalidCredentialsException();
+        throw new IllegalArgumentException("Obrigatório informar CPF ou e-mail.");
     }
 
     private Token tryLoginByCpf(Request request) {
