@@ -27,6 +27,7 @@ public class JdbcUserRepository implements UserRepository {
 
     private static final String SQL_SELECT_BY_ID = SQL_SELECT_BASE + " WHERE id = :id";
     private static final String SQL_SELECT_BY_CPF = SQL_SELECT_BASE + " WHERE cpf = :cpf";
+    private static final String SQL_SELECT_BY_EMAIL = SQL_SELECT_BASE + " WHERE email_address = :email_address";
 
     private final NamedParameterJdbcTemplate jdbc;
 
@@ -52,7 +53,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User getOrThrow(EmailAddress emailAddress) {
         var params = Map.of("email_address", emailAddress.value());
-        return queryForOptional(SQL_SELECT_BY_ID, params)
+        return queryForOptional(SQL_SELECT_BY_EMAIL, params)
                 .orElseThrow(() -> new UserNotFoundException(emailAddress));
     }
 
