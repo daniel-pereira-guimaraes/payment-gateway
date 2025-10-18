@@ -11,7 +11,7 @@ public class UserFixture {
     public static final EmailAddress EMAIL_ADDRESS = EmailAddress.of("a@b.com");
     public static final PersonName PERSON_NAME = PersonName.of("DANIEL");
     public static final PlainTextPassword PLAIN_TEXT_PASSWORD = PlainTextPassword.of("Password!12345");
-    public static final HashedPassword HASHED_PASSWORD = HashedPassword.of("hashPassword");
+    public static final HashedPassword HASHED_PASSWORD = HashedPassword.of("$2a$10$4LNeRTVaYHFqMEcpK6wV8.DPpiuNpT4DjXGzQnCZB/bBX6u1s9F3y");
     public static final Balance BALANCE = Balance.of(BigDecimal.TEN.add(BigDecimal.TWO));
 
     private UserFixture() {
