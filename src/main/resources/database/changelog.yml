@@ -95,3 +95,33 @@ databaseChangeLog:
             referencedTableName: tb_user
             referencedColumnNames: id
             constraintName: fk_charge_payer
+  - changeSet:
+      id: 2
+      author: daniel
+      changes:
+        - createTable:
+            tableName: tb_payment
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: charge_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: paid_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: tb_payment
+            baseColumnNames: charge_id
+            referencedTableName: tb_charge
+            referencedColumnNames: id
+            constraintName: fk_payment_charge
