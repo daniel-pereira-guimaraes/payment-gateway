@@ -40,10 +40,6 @@ public class PlainTextPassword {
         return value;
     }
 
-    public HashedPassword toHashedPassword(PasswordHasher hasher) {
-        return HashedPassword.of(hasher.hash(this));
-    }
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

@@ -1,7 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.user;
 
 import com.danielpg.paymentgateway.domain.user.InvalidPasswordException;
-import com.danielpg.paymentgateway.domain.user.PasswordHasher;
 import com.danielpg.paymentgateway.domain.user.PlainTextPassword;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,8 +10,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class PlainTextPasswordTest {
 
@@ -23,7 +20,6 @@ class PlainTextPasswordTest {
     private static final String NO_LOWERCASE_PASSWORD = "A1!BCDEFGH";
     private static final String NO_DIGIT_PASSWORD = "Aa!bcdefgh";
     private static final String NO_SYMBOL_PASSWORD = "Aa1bcdefgh";
-    public static final String HASH = "hashedValue123";
 
     @Test
     void ofReturnsPlainTextPasswordWhenValid() {
@@ -95,15 +91,4 @@ class PlainTextPasswordTest {
         assertThat(plain.value(), is(MAX_LENGTH_PASSWORD));
     }
 
-    @Test
-    void toHashedPasswordReturnsHashedPasswordUsingHasher() {
-        var plain = PlainTextPassword.of(VALID_PASSWORD);
-        var hasher = mock(PasswordHasher.class);
-        when(hasher.hash(plain)).thenReturn(HASH);
-
-        var hashed = plain.toHashedPassword(hasher);
-
-        assertThat(hashed, notNullValue());
-        assertThat(hashed.hash(), is(HASH));
-    }
 }
