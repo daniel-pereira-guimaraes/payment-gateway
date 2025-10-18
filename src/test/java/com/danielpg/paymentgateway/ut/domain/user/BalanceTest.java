@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.user;
 
-import com.danielpg.paymentgateway.domain.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Balance;
 import com.danielpg.paymentgateway.domain.user.InsufficientBalanceException;
 import org.junit.jupiter.api.Test;

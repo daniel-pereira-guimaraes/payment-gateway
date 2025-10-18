@@ -1,11 +1,10 @@
 package com.danielpg.paymentgateway.it.infrastructure.jdbc;
 
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.payment.Payment;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentId;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
-import com.danielpg.paymentgateway.fixture.PaymentFixture;
 import com.danielpg.paymentgateway.it.infrastructure.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

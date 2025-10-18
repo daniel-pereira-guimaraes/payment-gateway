@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.Validation;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import io.micrometer.common.util.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

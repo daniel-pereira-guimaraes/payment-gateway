@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.infrastructure.jdbc;
 
-import com.danielpg.paymentgateway.domain.PositiveMoney;
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.*;
 import com.danielpg.paymentgateway.domain.user.UserId;
 import org.springframework.dao.EmptyResultDataAccessException;

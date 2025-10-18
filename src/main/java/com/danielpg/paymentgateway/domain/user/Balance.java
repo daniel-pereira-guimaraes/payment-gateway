@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.AbstractMoney;
+import com.danielpg.paymentgateway.domain.shared.AbstractMoney;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

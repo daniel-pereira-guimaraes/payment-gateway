@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.domain;
+package com.danielpg.paymentgateway.domain.shared;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

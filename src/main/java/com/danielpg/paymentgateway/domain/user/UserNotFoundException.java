@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.AbstractNotFoundException;
+import com.danielpg.paymentgateway.domain.shared.AbstractNotFoundException;
 
 public class UserNotFoundException extends AbstractNotFoundException {
 

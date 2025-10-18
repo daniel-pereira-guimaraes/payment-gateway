@@ -1,13 +1,13 @@
 package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
-import com.danielpg.paymentgateway.domain.AppClock;
-import com.danielpg.paymentgateway.domain.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.AppClock;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeNotFoundException;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
 import com.danielpg.paymentgateway.domain.charge.payment.RegisterPaymentService;
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.user.*;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;
 import com.danielpg.paymentgateway.fixture.UserFixture;

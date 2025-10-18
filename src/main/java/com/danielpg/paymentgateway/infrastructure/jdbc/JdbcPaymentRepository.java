@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.infrastructure.jdbc;
 
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.payment.Payment;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentId;

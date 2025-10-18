@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.charge;
 
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;

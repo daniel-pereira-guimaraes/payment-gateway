@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.it.infrastructure;
 
-import com.danielpg.paymentgateway.domain.AppClock;
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.AppClock;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import liquibase.integration.spring.SpringLiquibase;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

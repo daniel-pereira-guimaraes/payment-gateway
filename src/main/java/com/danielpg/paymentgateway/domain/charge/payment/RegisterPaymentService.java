@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
-import com.danielpg.paymentgateway.domain.AppClock;
+import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;

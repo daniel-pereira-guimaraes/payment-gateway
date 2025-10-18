@@ -1,8 +1,8 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.PositiveMoney;
-import com.danielpg.paymentgateway.domain.TimeMillis;
-import com.danielpg.paymentgateway.domain.Validation;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
 import io.micrometer.common.util.StringUtils;
 

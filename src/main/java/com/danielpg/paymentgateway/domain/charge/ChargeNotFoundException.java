@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.AbstractNotFoundException;
+import com.danielpg.paymentgateway.domain.shared.AbstractNotFoundException;
 
 public class ChargeNotFoundException extends AbstractNotFoundException {
 

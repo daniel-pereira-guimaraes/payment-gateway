@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
-import com.danielpg.paymentgateway.domain.TimeMillis;
-import com.danielpg.paymentgateway.domain.Validation;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 
 import java.util.Objects;

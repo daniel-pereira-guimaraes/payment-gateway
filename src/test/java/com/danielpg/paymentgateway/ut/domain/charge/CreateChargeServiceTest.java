@@ -1,8 +1,8 @@
 package com.danielpg.paymentgateway.ut.domain.charge;
 
-import com.danielpg.paymentgateway.domain.AppClock;
-import com.danielpg.paymentgateway.domain.PositiveMoney;
-import com.danielpg.paymentgateway.domain.TimeMillis;
+import com.danielpg.paymentgateway.domain.shared.AppClock;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.CreateChargeService;
 import com.danielpg.paymentgateway.domain.user.Cpf;

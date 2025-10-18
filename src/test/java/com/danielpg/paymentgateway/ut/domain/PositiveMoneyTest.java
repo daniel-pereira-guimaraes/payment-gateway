@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain;
 
-import com.danielpg.paymentgateway.domain.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

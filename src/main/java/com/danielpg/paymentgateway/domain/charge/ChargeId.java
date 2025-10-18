@@ -1,6 +1,6 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.SurrogateId;
+import com.danielpg.paymentgateway.domain.shared.SurrogateId;
 
 import java.util.Optional;
 

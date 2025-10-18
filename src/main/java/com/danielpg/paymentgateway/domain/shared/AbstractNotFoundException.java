@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.domain;
+package com.danielpg.paymentgateway.domain.shared;
 
 public abstract class AbstractNotFoundException extends RuntimeException {
 

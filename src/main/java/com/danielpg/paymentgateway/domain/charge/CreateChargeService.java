@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.AppClock;
-import com.danielpg.paymentgateway.domain.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.AppClock;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserNotFoundException;

@@ -1,7 +1,7 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.PositiveMoney;
-import com.danielpg.paymentgateway.domain.Validation;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
