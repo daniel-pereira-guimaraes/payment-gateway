@@ -19,7 +19,7 @@ class UserTest {
 
     @ParameterizedTest
     @CsvSource(value = {"null", "123"}, nullValues = {"null"})
-    void createSuccessfully(Long idValue) {
+    void createsSuccessfully(Long idValue) {
         var id = UserId.ofNullable(idValue).orElse(null);
         var user = builder().withId(id).build();
 
@@ -29,6 +29,18 @@ class UserTest {
         assertThat(user.emailAddress(), is(EMAIL_ADDRESS));
         assertThat(user.hashedPassword(), is(HASHED_PASSWORD));
         assertThat(user.balance(), is(BALANCE));
+    }
+
+    @Test
+    void createsUserWithZeroBalanceWhenNotSpecified() {
+        var user = User.builder()
+                .withName(PERSON_NAME)
+                .withCpf(CPF)
+                .withEmailAddress(EMAIL_ADDRESS)
+                .withHashedPassword(HASHED_PASSWORD)
+                .build();
+
+        assertThat(user.balance().value(), is(new BigDecimal("0.00")));
     }
 
     @Test
