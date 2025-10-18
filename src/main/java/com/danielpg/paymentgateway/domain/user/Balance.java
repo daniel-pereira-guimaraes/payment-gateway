@@ -11,6 +11,7 @@ public class Balance extends AbstractMoney {
 
     private static final BigDecimal MIN_VALUE = new BigDecimal("0.00");
     private static final BigDecimal MAX_VALUE = new BigDecimal("999999999.99");
+    public static final Balance ZERO = new Balance(BigDecimal.ZERO);
 
     protected Balance(BigDecimal value) {
         super(value, MIN_VALUE, MAX_VALUE);

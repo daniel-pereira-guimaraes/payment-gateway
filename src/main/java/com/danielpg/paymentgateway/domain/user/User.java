@@ -101,7 +101,7 @@ public class User {
         private Cpf cpf;
         private EmailAddress emailAddress1;
         private HashedPassword hashedPassword;
-        private Balance balance = Balance.of(BigDecimal.ZERO);
+        private Balance balance = Balance.ZERO;
 
         private Builder() {
         }

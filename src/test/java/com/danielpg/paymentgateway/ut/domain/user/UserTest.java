@@ -186,7 +186,7 @@ class UserTest {
 
         user.decreaseBalance(PositiveMoney.of(BigDecimal.TEN));
 
-        assertThat(user.balance(), is(Balance.of(BigDecimal.ZERO)));
+        assertThat(user.balance(), is(Balance.ZERO));
     }
 
     @Test
