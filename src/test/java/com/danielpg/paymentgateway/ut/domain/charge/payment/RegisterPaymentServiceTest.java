@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentAuthorizer;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.charge.Charge;
@@ -27,6 +28,7 @@ class RegisterPaymentServiceTest {
     private ChargeRepository chargeRepository;
     private UserRepository userRepository;
     private PaymentRepository paymentRepository;
+    private PaymentAuthorizer paymentAuthorizer;
     private RegisterPaymentService service;
 
     private static final TimeMillis NOW = TimeMillis.now();
@@ -51,7 +53,9 @@ class RegisterPaymentServiceTest {
         chargeRepository = mock(ChargeRepository.class);
         userRepository = mock(UserRepository.class);
         paymentRepository = mock(PaymentRepository.class);
-        service = new RegisterPaymentService(chargeRepository, userRepository, paymentRepository, clock);
+        paymentAuthorizer = mock(PaymentAuthorizer.class);
+        service = new RegisterPaymentService(chargeRepository,
+                userRepository, paymentRepository, paymentAuthorizer, clock);
 
         when(paymentRepository.exists(CHARGE.id())).thenReturn(false);
         when(chargeRepository.getOrThrow(CHARGE.id())).thenReturn(CHARGE);
@@ -66,10 +70,11 @@ class RegisterPaymentServiceTest {
 
         assertThat(payment, notNullValue());
         assertThat(payment.chargeId(), is(CHARGE.id()));
-        assertThat(payment.paidAt(),  is(NOW));
+        assertThat(payment.paidAt(), is(NOW));
         assertThat(CHARGE.status(), is(PAID));
         assertThat(ISSUER.balance().value(), is(new BigDecimal("11.00")));
         assertThat(PAYER.balance().value(), is(new BigDecimal("9.00")));
+        verify(paymentAuthorizer).authorizePayment(CHARGE);
         verify(paymentRepository).save(payment);
         verify(chargeRepository).save(CHARGE);
         verify(userRepository).save(ISSUER);
@@ -136,6 +141,19 @@ class RegisterPaymentServiceTest {
         when(userRepository.getOrThrow(PAYER.id())).thenReturn(lowBalancePayer);
 
         assertThrows(InsufficientBalanceException.class, () -> service.registerPayment(CHARGE.id()));
+
+        verify(paymentRepository, never()).save(any());
+        verify(chargeRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void propagatesPaymentAuthorizerException() {
+        doThrow(new RuntimeException()).when(paymentAuthorizer).authorizePayment(CHARGE);
+
+        assertThrows(RuntimeException.class,
+                () -> service.registerPayment(CHARGE.id())
+        );
 
         verify(paymentRepository, never()).save(any());
         verify(chargeRepository, never()).save(any());
