@@ -34,6 +34,24 @@ public class RegisterPaymentRequest {
         return creditCard;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        return equalsCasted((RegisterPaymentRequest) other);
+    }
+
+    private boolean equalsCasted(RegisterPaymentRequest other) {
+        return Objects.equals(charge, other.charge)
+                && method == other.method
+                && Objects.equals(creditCard, other.creditCard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(charge, method, creditCard);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -43,7 +61,8 @@ public class RegisterPaymentRequest {
         private PaymentMethod method;
         private CreditCard creditCard;
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public Builder withCharge(Charge charge) {
             this.charge = charge;
