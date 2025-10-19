@@ -2,10 +2,10 @@ package com.danielpg.paymentgateway.ut.domain.charge.payment;
 
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentMethod;
 import com.danielpg.paymentgateway.domain.charge.payment.RegisterPaymentRequest;
+import com.danielpg.paymentgateway.fixture.ChargeFixture;
 import com.danielpg.paymentgateway.fixture.CreditCardFixture;
 import org.junit.jupiter.api.Test;
 
-import static com.danielpg.paymentgateway.fixture.ChargeFixture.CHARGE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,45 +13,48 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class RegisterPaymentRequestTest {
 
     @Test
-    void buildRequestWithBalanceSuccessfully() {
+    void createsRequestWithBalanceWhenPaymentMethodIsBalance() {
+        var charge = ChargeFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(CHARGE_ID)
+                .withCharge(charge)
                 .withMethod(PaymentMethod.BALANCE)
                 .build();
 
-        assertThat(request.chargeId(), is(CHARGE_ID));
+        assertThat(request.charge(), is(charge));
         assertThat(request.method(), is(PaymentMethod.BALANCE));
         assertThat(request.creditCard(), nullValue());
     }
 
     @Test
-    void buildRequestWithCreditCardSuccessfully() {
+    void createsRequestWithCreditCardWhenPaymentMethodIsCreditCard() {
+        var charge = ChargeFixture.builder().build();
         var creditCard = CreditCardFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(CHARGE_ID)
+                .withCharge(charge)
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(creditCard)
                 .build();
 
-        assertThat(request.chargeId(), is(CHARGE_ID));
+        assertThat(request.charge(), is(charge));
         assertThat(request.method(), is(PaymentMethod.CREDIT_CARD));
         assertThat(request.creditCard(), is(creditCard));
     }
 
     @Test
-    void throwsExceptionWhenChargeIdIsNull() {
+    void throwsExceptionWhenChargeIsNull() {
         var builder = RegisterPaymentRequest.builder()
-                .withChargeId(null)
+                .withCharge(null)
                 .withMethod(PaymentMethod.BALANCE);
 
         var exception = assertThrows(NullPointerException.class, builder::build);
-        assertThat(exception.getMessage(), is("O id da cobrança é requerido."));
+        assertThat(exception.getMessage(), is("A cobrança é requerida."));
     }
 
     @Test
     void throwsExceptionWhenMethodIsNull() {
+        var charge = ChargeFixture.builder().build();
         var builder = RegisterPaymentRequest.builder()
-                .withChargeId(CHARGE_ID)
+                .withCharge(charge)
                 .withMethod(null);
 
         var exception = assertThrows(NullPointerException.class, builder::build);
@@ -60,8 +63,9 @@ class RegisterPaymentRequestTest {
 
     @Test
     void throwsExceptionWhenCreditCardIsNullForCreditCardMethod() {
+        var charge = ChargeFixture.builder().build();
         var builder = RegisterPaymentRequest.builder()
-                .withChargeId(CHARGE_ID)
+                .withCharge(charge)
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(null);
 
@@ -71,9 +75,10 @@ class RegisterPaymentRequestTest {
 
     @Test
     void creditCardIsNullWhenMethodIsBalanceEvenIfProvided() {
+        var charge = ChargeFixture.builder().build();
         var creditCard = CreditCardFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(CHARGE_ID)
+                .withCharge(charge)
                 .withMethod(PaymentMethod.BALANCE)
                 .withCreditCard(creditCard)
                 .build();

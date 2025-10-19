@@ -5,7 +5,6 @@ import com.danielpg.paymentgateway.domain.charge.payment.*;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.charge.Charge;
-import com.danielpg.paymentgateway.domain.charge.ChargeNotFoundException;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.user.*;
@@ -76,7 +75,7 @@ class RegisterPaymentServiceTest {
     @Test
     void registerPaymentWithBalance() {
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(charge.id())
+                .withCharge(charge)
                 .withMethod(PaymentMethod.BALANCE)
                 .build();
 
@@ -102,7 +101,7 @@ class RegisterPaymentServiceTest {
     void registerPaymentWithCreditCard() {
         var creditCard = CreditCardFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(charge.id())
+                .withCharge(charge)
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(creditCard)
                 .build();
@@ -126,7 +125,7 @@ class RegisterPaymentServiceTest {
     void throwsExceptionWhenPaymentAlreadyExists() {
         when(paymentRepository.exists(charge.id())).thenReturn(true);
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(charge.id())
+                .withCharge(charge)
                 .withMethod(PaymentMethod.BALANCE)
                 .build();
 
@@ -141,27 +140,11 @@ class RegisterPaymentServiceTest {
     }
 
     @Test
-    void throwsExceptionWhenChargeNotFound() {
-        when(chargeRepository.getOrThrow(charge.id())).thenThrow(ChargeNotFoundException.class);
-        var request = RegisterPaymentRequest.builder()
-                .withChargeId(charge.id())
-                .withMethod(PaymentMethod.BALANCE)
-                .build();
-
-        assertThrows(ChargeNotFoundException.class,
-                () -> service.registerPayment(request));
-
-        verify(paymentRepository, never()).save(any());
-        verify(chargeRepository, never()).save(any());
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
     void propagatesPaymentNotAuthorizedException() {
         doThrow(new PaymentNotAuthorizedException()).when(paymentAuthorizer).authorizePayment(charge);
         var creditCard = CreditCardFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(charge.id())
+                .withCharge(charge)
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(creditCard)
                 .build();
@@ -185,7 +168,7 @@ class RegisterPaymentServiceTest {
         when(chargeRepository.getOrThrow(nonPendingCharge.id())).thenReturn(nonPendingCharge);
 
         var request = RegisterPaymentRequest.builder()
-                .withChargeId(nonPendingCharge.id())
+                .withCharge(nonPendingCharge)
                 .withMethod(PaymentMethod.BALANCE)
                 .build();
 

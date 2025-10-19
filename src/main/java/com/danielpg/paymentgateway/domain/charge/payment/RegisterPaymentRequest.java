@@ -1,18 +1,18 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
-import com.danielpg.paymentgateway.domain.charge.ChargeId;
+import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 
 import java.util.Objects;
 
 public class RegisterPaymentRequest {
 
-    private final ChargeId chargeId;
+    private final Charge charge;
     private final PaymentMethod method;
     private final CreditCard creditCard;
 
     private RegisterPaymentRequest(Builder builder) {
-        this.chargeId = Objects.requireNonNull(builder.chargeId, "O id da cobrança é requerido.");
+        this.charge = Objects.requireNonNull(builder.charge, "A cobrança é requerida.");
         this.method = Objects.requireNonNull(builder.method, "O método de pagamento é requerido.");
 
         if (this.method == PaymentMethod.CREDIT_CARD) {
@@ -22,8 +22,8 @@ public class RegisterPaymentRequest {
         }
     }
 
-    public ChargeId chargeId() {
-        return chargeId;
+    public Charge charge() {
+        return charge;
     }
 
     public PaymentMethod method() {
@@ -39,14 +39,14 @@ public class RegisterPaymentRequest {
     }
 
     public static class Builder {
-        private ChargeId chargeId;
+        private Charge charge;
         private PaymentMethod method;
         private CreditCard creditCard;
 
         private Builder() {}
 
-        public Builder withChargeId(ChargeId chargeId) {
-            this.chargeId = chargeId;
+        public Builder withCharge(Charge charge) {
+            this.charge = charge;
             return this;
         }
 

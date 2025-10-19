@@ -1,6 +1,5 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
-import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
@@ -27,23 +26,22 @@ public class RegisterPaymentService {
     }
 
     public Payment registerPayment(RegisterPaymentRequest request) {
-        checkIfPaymentAlreadyExists(request.chargeId());
-        var charge = getCharge(request.chargeId());
+        checkIfPaymentAlreadyExists(request.charge());
 
-        charge.ensurePendingStatus();
+        request.charge().ensurePendingStatus();
 
         if (request.method() == PaymentMethod.CREDIT_CARD) {
-            paymentAuthorizer.authorizePayment(charge);
+            paymentAuthorizer.authorizePayment(request.charge());
         }
 
-        var payment = buildPayment(charge, request);
+        var payment = buildPayment(request.charge(), request);
 
         if (request.method() == PaymentMethod.BALANCE) {
-            updateBalances(charge);
+            updateBalances(request.charge());
         }
 
-        charge.changeStatusToPaid();
-        chargeRepository.save(charge);
+        request.charge().changeStatusToPaid();
+        chargeRepository.save(request.charge());
         paymentRepository.save(payment);
 
         return payment;
@@ -58,14 +56,10 @@ public class RegisterPaymentService {
         userRepository.save(payer);
     }
 
-    private void checkIfPaymentAlreadyExists(ChargeId chargeId) {
-        if (paymentRepository.exists(chargeId)) {
-            throw new IllegalStateException("Já existe um pagamento para esta cobrança: " + chargeId.value());
+    private void checkIfPaymentAlreadyExists(Charge charge) {
+        if (paymentRepository.exists(charge.id())) {
+            throw new IllegalStateException("Já existe um pagamento para esta cobrança: " + charge.id().value());
         }
-    }
-
-    private Charge getCharge(ChargeId chargeId) {
-        return chargeRepository.getOrThrow(chargeId);
     }
 
     private Payment buildPayment(Charge charge, RegisterPaymentRequest request) {
