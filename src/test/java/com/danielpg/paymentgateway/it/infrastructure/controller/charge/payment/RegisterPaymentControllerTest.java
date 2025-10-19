@@ -1,6 +1,5 @@
 package com.danielpg.paymentgateway.it.infrastructure.controller.charge.payment;
 
-import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.payment.*;
 import com.danielpg.paymentgateway.it.infrastructure.controller.ControllerTestBase;
 import org.json.JSONObject;
@@ -13,7 +12,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -150,7 +148,8 @@ public class RegisterPaymentControllerTest extends ControllerTestBase {
         var requestBody = REQUEST_WITH_CARD.formatted(
                 CHARGE_ID_SUCCESS, CARD_NUMBER, CARD_EXPIRATION, CARD_CVV);
 
-        doThrow(PaymentNotAuthorizedException.class).when(paymentAuthorizer).authorizePayment(any());
+        doThrow(PaymentNotAuthorizedException.class)
+                .when(paymentAuthorizer).authorizePayment(any(), any());
 
         mockMvc.perform(post(ENDPOINT)
                         .header(AUTHORIZATION, userToken())

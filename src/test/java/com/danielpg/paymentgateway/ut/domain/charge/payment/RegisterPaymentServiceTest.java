@@ -90,7 +90,7 @@ class RegisterPaymentServiceTest {
         assertThat(ISSUER.balance().value(), is(new BigDecimal("11.00")));
         assertThat(PAYER.balance().value(), is(new BigDecimal("9.00")));
 
-        verify(paymentAuthorizer, never()).authorizePayment(any());
+        verify(paymentAuthorizer, never()).authorizePayment(any(), any());
         verify(paymentRepository).save(payment);
         verify(chargeRepository).save(charge);
         verify(userRepository).save(ISSUER);
@@ -115,7 +115,7 @@ class RegisterPaymentServiceTest {
         assertThat(payment.paidAt(), is(NOW));
         assertThat(charge.status(), is(PAID));
 
-        verify(paymentAuthorizer).authorizePayment(charge);
+        verify(paymentAuthorizer).authorizePayment(charge, request.creditCard());
         verify(paymentRepository).save(payment);
         verify(chargeRepository).save(charge);
         verify(userRepository, never()).save(any());
@@ -141,7 +141,7 @@ class RegisterPaymentServiceTest {
 
     @Test
     void propagatesPaymentNotAuthorizedException() {
-        doThrow(new PaymentNotAuthorizedException()).when(paymentAuthorizer).authorizePayment(charge);
+        doThrow(PaymentNotAuthorizedException.class).when(paymentAuthorizer).authorizePayment(any(), any());
         var creditCard = CreditCardFixture.builder().build();
         var request = RegisterPaymentRequest.builder()
                 .withCharge(charge)

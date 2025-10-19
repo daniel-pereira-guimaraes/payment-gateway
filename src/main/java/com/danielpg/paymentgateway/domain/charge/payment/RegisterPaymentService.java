@@ -31,7 +31,7 @@ public class RegisterPaymentService {
         request.charge().ensurePendingStatus();
 
         if (request.method() == PaymentMethod.CREDIT_CARD) {
-            paymentAuthorizer.authorizePayment(request.charge());
+            paymentAuthorizer.authorizePayment(request.charge(), request.creditCard());
         }
 
         var payment = buildPayment(request.charge(), request);
