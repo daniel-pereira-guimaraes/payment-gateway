@@ -198,4 +198,25 @@ class ChargeTest {
         );
 
         assertThat(exception.getMessage(), is("A cobrança não está pendente."));
-    }}
+    }
+
+    @Test
+    void ensurePendingStatusDoesNotThrowsWhenPendingCharge() {
+        var charge = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PENDING)
+                .build();
+
+        charge.ensurePendingStatus();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
+    void ensurePendingStatusThrowsIfNotPending(ChargeStatus nonPendingStatus) {
+        var charge = ChargeFixture.builder()
+                .withStatus(nonPendingStatus)
+                .build();
+
+        var exception = assertThrows(IllegalStateException.class, charge::ensurePendingStatus);
+        assertThat(exception.getMessage(), is("A cobrança não está pendente."));
+    }
+}
