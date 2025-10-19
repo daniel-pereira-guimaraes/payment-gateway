@@ -23,6 +23,7 @@ import java.util.Optional;
 @Repository
 public class JdbcPaymentRepository implements PaymentRepository {
 
+    // TODO: Remover dados do cartão do banco, por questão de segurança.
     private static final String SQL_INSERT = """
             INSERT INTO tb_payment (charge_id, paid_at, method, credit_card_number, credit_card_expiration, credit_card_cvv)
             VALUES (:chargeId, :paidAt, :method, :creditCardNumber, :creditCardExpiration, :creditCardCvv)
