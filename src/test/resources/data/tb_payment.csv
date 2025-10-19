@@ -1,3 +1,4 @@
 id;charge_id;paid_at;method;credit_card_number;credit_card_expiration;credit_card_cvv
 1;2;1700007300;CREDIT_CARD;4111111111111111;12/2099;123
 2;5;1700014500;BALANCE;;;
+3;8;1700014800;BALANCE;;;

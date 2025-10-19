@@ -6,3 +6,6 @@ id;issuer_id;payer_id;amount;description;created_at;due_at;status
 5;1;2;300.00;Servico de manutencao;1700010801;1700014401;PAID
 6;2;1;1000.00;Projeto especial;1700018001;1700021601;CANCELED
 7;1;2;300.00;Servico de jardinagem;1700010802;1700014402;CANCELED
+8;2;1;1000.00;Servico de TI;1700018003;1700021603;PAID
+9;2;1;1000.01;Valor alto;1700018009;1700021609;PENDING
+
