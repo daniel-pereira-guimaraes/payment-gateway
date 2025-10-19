@@ -1,5 +1,6 @@
-package com.danielpg.paymentgateway.domain.shared;
+package com.danielpg.paymentgateway.domain.shared.creditcard;
 
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import io.micrometer.common.util.StringUtils;
 
 import java.time.YearMonth;

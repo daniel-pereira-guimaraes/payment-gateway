@@ -1,6 +1,6 @@
-package com.danielpg.paymentgateway.ut.domain.shared;
+package com.danielpg.paymentgateway.ut.domain.shared.creditcard;
 
-import com.danielpg.paymentgateway.domain.shared.CreditCardExpirationDate;
+import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardExpirationDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
