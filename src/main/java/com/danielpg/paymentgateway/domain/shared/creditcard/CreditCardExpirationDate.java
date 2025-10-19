@@ -4,6 +4,7 @@ import com.danielpg.paymentgateway.domain.shared.Validation;
 import io.micrometer.common.util.StringUtils;
 
 import java.time.YearMonth;
+import java.util.Objects;
 import java.util.Optional;
 
 public class CreditCardExpirationDate {
@@ -75,4 +76,17 @@ public class CreditCardExpirationDate {
         }
         return YearMonth.of(year, month).isBefore(YearMonth.now());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        return Objects.equals(value, ((CreditCardExpirationDate) other).value);
+    }
+
 }

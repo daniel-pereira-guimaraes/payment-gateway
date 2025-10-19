@@ -56,15 +56,18 @@ public class Payment {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Payment payment = (Payment) o;
-        return Objects.equals(id, payment.id)
-                && Objects.equals(chargeId, payment.chargeId)
-                && Objects.equals(method, payment.method)
-                && Objects.equals(creditCard, payment.creditCard)
-                && Objects.equals(paidAt, payment.paidAt);
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        return equalsCasted((Payment) other);
+    }
+
+    private boolean equalsCasted(Payment other) {
+        return Objects.equals(id, other.id)
+                && Objects.equals(chargeId, other.chargeId)
+                && Objects.equals(method, other.method)
+                && Objects.equals(creditCard, other.creditCard)
+                && Objects.equals(paidAt, other.paidAt);
     }
 
     @Override

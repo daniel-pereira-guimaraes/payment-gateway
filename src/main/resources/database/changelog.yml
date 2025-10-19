@@ -125,3 +125,25 @@ databaseChangeLog:
             referencedTableName: tb_charge
             referencedColumnNames: id
             constraintName: fk_payment_charge
+
+  - changeSet:
+      id: 3
+      author: daniel
+      changes:
+        - addColumn:
+            tableName: tb_payment
+            columns:
+              - column:
+                  name: method
+                  type: ENUM('BALANCE','CREDIT_CARD')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: credit_card_number
+                  type: VARCHAR(19)
+              - column:
+                  name: credit_card_expiration
+                  type: VARCHAR(7)
+              - column:
+                  name: credit_card_cvv
+                  type: VARCHAR(4)

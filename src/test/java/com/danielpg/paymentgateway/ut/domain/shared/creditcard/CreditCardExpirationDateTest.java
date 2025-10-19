@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CreditCardExpirationDateTest {
@@ -83,5 +84,16 @@ class CreditCardExpirationDateTest {
                 () -> CreditCardExpirationDate.of(input));
 
         assertThat(exception.getMessage(), is("Data de expiração inválida."));
+    }
+
+    @Test
+    void testEqualsAndHashCodeForSameAndDifferentValues() {
+        var date1 = CreditCardExpirationDate.of("12/25");
+        var date2 = CreditCardExpirationDate.of("12/25");
+        var date3 = CreditCardExpirationDate.of("01/26");
+
+        assertThat(date1, is(date2));
+        assertThat(date1.hashCode(), is(date2.hashCode()));
+        assertThat(date1, not(date3));
     }
 }

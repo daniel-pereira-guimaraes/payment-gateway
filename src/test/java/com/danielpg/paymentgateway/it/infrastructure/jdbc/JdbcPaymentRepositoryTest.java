@@ -65,6 +65,8 @@ class JdbcPaymentRepositoryTest extends IntegrationTestBase {
         var updated = Payment.builder()
                 .withId(payment.id())
                 .withChargeId(payment.chargeId())
+                .withMethod(payment.method())
+                .withCreditCard(payment.creditCard())
                 .withPaidAt(TimeMillis.now())
                 .build();
 
