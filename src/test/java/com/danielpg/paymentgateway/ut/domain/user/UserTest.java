@@ -148,7 +148,7 @@ class UserTest {
 
     @Test
     void equalsReturnsFalseForDifferentName() {
-        var user1 = builder().withName(PersonName.of("João")).build();
+        var user1 = builder().withName(PersonName.of("Joao")).build();
         var user2 = builder().withName(PersonName.of("Maria")).build();
 
         assertThat(user1, not(user2));

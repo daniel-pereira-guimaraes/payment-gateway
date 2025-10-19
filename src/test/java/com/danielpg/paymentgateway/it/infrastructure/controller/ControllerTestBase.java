@@ -18,7 +18,7 @@ public abstract class ControllerTestBase extends IntegrationTestBase {
     protected static final String USER_EMAIL = "joao.silva@email.com";
     protected static final User CURRENT_USER = User.builder()
             .withId(UserId.of(1L))
-            .withName(PersonName.of("João Silva"))
+            .withName(PersonName.of("Joao Silva"))
             .withCpf(Cpf.of("12312312387"))
             .withEmailAddress(EmailAddress.of("joao.silva@email.com"))
             .withHashedPassword(HashedPassword.of("$2a$10$4LNeRTVaYHFqMEcpK6wV8.DPpiuNpT4DjXGzQnCZB/bBX6u1s9F3y"))

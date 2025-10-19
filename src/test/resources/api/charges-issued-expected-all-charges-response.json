@@ -1,0 +1,60 @@
+{
+  "pendings": [
+    {
+      "chargeId": 1,
+      "payer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 150.00,
+      "description": "Servico de limpeza",
+      "createdAt": 1700000000,
+      "dueAt": 1700003600,
+      "status": "PENDING",
+      "paidAt": null
+    }
+  ],
+  "paids": [
+    {
+      "chargeId": 2,
+      "payer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 250.50,
+      "description": "Compra de material",
+      "createdAt": 1700007200,
+      "dueAt": 1700010800,
+      "status": "PAID",
+      "paidAt": 1700007300
+    },
+    {
+      "chargeId": 5,
+      "payer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 300.00,
+      "description": "Servico de manutencao",
+      "createdAt": 1700010801,
+      "dueAt": 1700014401,
+      "status": "PAID",
+      "paidAt": 1700014500
+    }
+  ],
+  "canceleds": [
+    {
+      "chargeId": 7,
+      "payer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 300.00,
+      "description": "Servico de jardinagem",
+      "createdAt": 1700010802,
+      "dueAt": 1700014402,
+      "status": "CANCELED",
+      "paidAt": null
+    }
+  ]
+}
