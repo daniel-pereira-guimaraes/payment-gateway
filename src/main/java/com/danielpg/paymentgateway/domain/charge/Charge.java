@@ -87,7 +87,7 @@ public class Charge {
         this.status = ChargeStatus.CANCELED;
     }
 
-    private void ensurePendingStatus() {
+    public void ensurePendingStatus() {
         if (status != ChargeStatus.PENDING) {
             throw new IllegalStateException("A cobrança não está pendente.");
         }

@@ -1,8 +1,8 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
+import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
 import com.danielpg.paymentgateway.domain.charge.Charge;
-import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.user.UserRepository;
 
@@ -16,7 +16,8 @@ public class RegisterPaymentService {
 
     public RegisterPaymentService(ChargeRepository chargeRepository,
                                   UserRepository userRepository,
-                                  PaymentRepository paymentRepository, PaymentAuthorizer paymentAuthorizer,
+                                  PaymentRepository paymentRepository,
+                                  PaymentAuthorizer paymentAuthorizer,
                                   AppClock clock) {
         this.chargeRepository = chargeRepository;
         this.userRepository = userRepository;
@@ -25,15 +26,26 @@ public class RegisterPaymentService {
         this.clock = clock;
     }
 
-    public Payment registerPayment(ChargeId chargeId) {
-        checkIfPaymentAlreadyExists(chargeId);
-        var charge = getCharge(chargeId);
-        paymentAuthorizer.authorizePayment(charge);
-        var payment = buildPayment(charge);
-        updateBalances(charge);
+    public Payment registerPayment(RegisterPaymentRequest request) {
+        checkIfPaymentAlreadyExists(request.chargeId());
+        var charge = getCharge(request.chargeId());
+
+        charge.ensurePendingStatus();
+
+        if (request.method() == PaymentMethod.CREDIT_CARD) {
+            paymentAuthorizer.authorizePayment(charge);
+        }
+
+        var payment = buildPayment(charge, request);
+
+        if (request.method() == PaymentMethod.BALANCE) {
+            updateBalances(charge);
+        }
+
         charge.changeStatusToPaid();
         chargeRepository.save(charge);
         paymentRepository.save(payment);
+
         return payment;
     }
 
@@ -56,11 +68,12 @@ public class RegisterPaymentService {
         return chargeRepository.getOrThrow(chargeId);
     }
 
-    private Payment buildPayment(Charge charge) {
+    private Payment buildPayment(Charge charge, RegisterPaymentRequest request) {
         return Payment.builder()
                 .withChargeId(charge.id())
+                .withMethod(request.method())
+                .withCreditCard(request.creditCard())
                 .withPaidAt(clock.now())
                 .build();
     }
-
 }
