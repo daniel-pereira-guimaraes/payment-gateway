@@ -3,6 +3,7 @@ package com.danielpg.paymentgateway.domain.charge.payment;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
+import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 
 import java.util.Objects;
 
@@ -10,12 +11,21 @@ public class Payment {
 
     private PaymentId id;
     private final ChargeId chargeId;
+    private final PaymentMethod method;
+    private final CreditCard creditCard;
     private final TimeMillis paidAt;
 
     private Payment(Builder builder) {
         this.id = builder.id;
         this.chargeId = Validation.required(builder.chargeId, "O id da cobrança é requerido.");
+        this.method = Validation.required(builder.method, "O método de pagamento é requerido.");
         this.paidAt = Validation.required(builder.paidAt, "A data/hora do pagamento é requerida.");
+
+        if (method == PaymentMethod.CREDIT_CARD) {
+            this.creditCard = Validation.required(builder.creditCard, "O cartão de crédito é requerido para pagamentos com cartão.");
+        } else {
+            this.creditCard = null;
+        }
     }
 
     public PaymentId id() {
@@ -24,6 +34,14 @@ public class Payment {
 
     public ChargeId chargeId() {
         return chargeId;
+    }
+
+    public PaymentMethod method() {
+        return method;
+    }
+
+    public CreditCard creditCard() {
+        return creditCard;
     }
 
     public TimeMillis paidAt() {
@@ -42,12 +60,16 @@ public class Payment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return Objects.equals(id, payment.id) && Objects.equals(chargeId, payment.chargeId) && Objects.equals(paidAt, payment.paidAt);
+        return Objects.equals(id, payment.id)
+                && Objects.equals(chargeId, payment.chargeId)
+                && Objects.equals(method, payment.method)
+                && Objects.equals(creditCard, payment.creditCard)
+                && Objects.equals(paidAt, payment.paidAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chargeId, paidAt);
+        return Objects.hash(id, chargeId, method, creditCard, paidAt);
     }
 
     public static Builder builder() {
@@ -57,6 +79,8 @@ public class Payment {
     public static class Builder {
         private PaymentId id;
         private ChargeId chargeId;
+        private PaymentMethod method;
+        private CreditCard creditCard;
         private TimeMillis paidAt;
 
         private Builder() {
@@ -69,6 +93,16 @@ public class Payment {
 
         public Builder withChargeId(ChargeId chargeId) {
             this.chargeId = chargeId;
+            return this;
+        }
+
+        public Builder withMethod(PaymentMethod method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder withCreditCard(CreditCard creditCard) {
+            this.creditCard = creditCard;
             return this;
         }
 
