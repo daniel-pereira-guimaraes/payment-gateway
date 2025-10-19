@@ -1,8 +1,11 @@
 package com.danielpg.paymentgateway.domain.shared;
 
-import java.time.YearMonth;
+import io.micrometer.common.util.StringUtils;
 
-public final class CreditCardExpirationValidator {
+import java.time.YearMonth;
+import java.util.Optional;
+
+public class CreditCardExpirationDate {
 
     private static final String REQUIRED_MSG = "Data de expiração é requerida.";
     private static final String INVALID_MSG = "Data de expiração inválida.";
@@ -11,15 +14,31 @@ public final class CreditCardExpirationValidator {
     private static final int MIN_MONTH = 1;
     private static final int MAX_MONTH = 12;
 
-    private CreditCardExpirationValidator() {
+    private final String value;
+
+    private CreditCardExpirationDate(String value) {
+        this.value = validate(value);
     }
 
-    public static String validate(String expDate) {
-        if (expDate == null || expDate.isBlank()) {
-            throw new IllegalArgumentException(REQUIRED_MSG);
-        }
+    public static CreditCardExpirationDate of(String value) {
+        return new CreditCardExpirationDate(value);
+    }
 
-        var parts = expDate.trim().split(SEP);
+    public static Optional<CreditCardExpirationDate> ofNullable(String value) {
+        return StringUtils.isBlank(value)
+                ? Optional.empty()
+                : Optional.of(new CreditCardExpirationDate(value));
+    }
+
+    public String value() {
+        return value;
+    }
+    
+    private String validate(String value) {
+        Validation.required(value, REQUIRED_MSG);
+        var trimmedValue = value.trim();
+
+        var parts = trimmedValue.split(SEP);
         if (parts.length != 2) {
             throw new IllegalArgumentException(INVALID_MSG);
         }
@@ -30,10 +49,11 @@ public final class CreditCardExpirationValidator {
             if (isExpiredOrInvalid(month, year)) {
                 throw new IllegalArgumentException(INVALID_MSG);
             }
-            return expDate.trim();
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(INVALID_MSG, e);
         }
+
+        return trimmedValue;
     }
 
     private static int parseYear(String yearPart) {
