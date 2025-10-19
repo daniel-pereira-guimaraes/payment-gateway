@@ -5,9 +5,13 @@ import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
+import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.UserId;
 
 import java.math.BigDecimal;
+
+import static com.danielpg.paymentgateway.fixture.CpfFixture.CPF1;
+import static com.danielpg.paymentgateway.fixture.CpfFixture.CPF2;
 
 public class ChargeFixture {
 
@@ -18,7 +22,8 @@ public class ChargeFixture {
     public static final String DESCRIPTION = "Charge description";
     public static final TimeMillis CREATED_AT = TimeMillis.of(1L);
     public static final TimeMillis DUE_AT = TimeMillis.of(2L);
-
+    public static final Cpf ISSUER_CPF = CPF1;
+    public static final Cpf PAYER_CPF = CPF2;
     private ChargeFixture() {
     }
 
