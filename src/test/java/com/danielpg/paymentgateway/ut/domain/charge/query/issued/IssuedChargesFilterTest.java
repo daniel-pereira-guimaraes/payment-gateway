@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.ut.domain.charge.query;
+package com.danielpg.paymentgateway.ut.domain.charge.query.issued;
 
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesFilter;
