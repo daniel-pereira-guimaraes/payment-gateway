@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static com.danielpg.paymentgateway.domain.charge.ChargeStatus.PENDING;
 import static com.danielpg.paymentgateway.domain.user.UserNotFoundException.USER_WITH_CPF_NOT_FOUND;
@@ -50,8 +51,8 @@ class CreateChargeServiceTest {
 
     @Test
     void returnsChargeWhenAllDataIsValid() {
-        when(userRepository.get(ISSUER_CPF)).thenReturn(java.util.Optional.of(ISSUER));
-        when(userRepository.get(PAYER_CPF)).thenReturn(java.util.Optional.of(PAYER));
+        when(userRepository.get(ISSUER_CPF)).thenReturn(Optional.of(ISSUER));
+        when(userRepository.get(PAYER_CPF)).thenReturn(Optional.of(PAYER));
 
         var charge = service.createCharge(REQUEST);
 
