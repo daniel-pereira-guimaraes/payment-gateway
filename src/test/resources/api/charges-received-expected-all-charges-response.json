@@ -1,0 +1,73 @@
+{
+  "pendings": [
+    {
+      "chargeId": 4,
+      "issuer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 200.00,
+      "description": "Compra de escritorio",
+      "createdAt": 1700003601,
+      "dueAt": 1700007201,
+      "status": "PENDING",
+      "paidAt": null
+    },
+    {
+      "chargeId": 9,
+      "issuer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 1000.01,
+      "description": "Valor alto",
+      "createdAt": 1700018009,
+      "dueAt": 1700021609,
+      "status": "PENDING",
+      "paidAt": null
+    }
+  ],
+  "paids": [
+    {
+      "chargeId": 8,
+      "issuer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 1000.00,
+      "description": "Servico de TI",
+      "createdAt": 1700018003,
+      "dueAt": 1700021603,
+      "status": "PAID",
+      "paidAt": 1700014800
+    }
+  ],
+  "canceleds": [
+    {
+      "chargeId": 3,
+      "issuer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 500.00,
+      "description": "Assinatura mensal",
+      "createdAt": 1700014400,
+      "dueAt": 1700018000,
+      "status": "CANCELED",
+      "paidAt": null
+    },
+    {
+      "chargeId": 6,
+      "issuer": {
+        "cpf": "32132132178",
+        "name": "Maria Oliveira"
+      },
+      "amount": 1000.00,
+      "description": "Projeto especial",
+      "createdAt": 1700018001,
+      "dueAt": 1700021601,
+      "status": "CANCELED",
+      "paidAt": null
+    }
+  ]
+}
