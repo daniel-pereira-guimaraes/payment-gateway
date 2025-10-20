@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.it.infrastructure.jdbc;
 
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentNotFoundException;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.payment.Payment;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static com.danielpg.paymentgateway.fixture.PaymentFixture.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class JdbcPaymentRepositoryTest extends IntegrationTestBase {
@@ -49,10 +51,7 @@ class JdbcPaymentRepositoryTest extends IntegrationTestBase {
     void getOrThrowThrowsWhenPaymentNotFound() {
         var id = PaymentId.of(999L);
 
-        var exception = org.junit.jupiter.api.Assertions.assertThrows(
-                com.danielpg.paymentgateway.domain.charge.payment.PaymentNotFoundException.class,
-                () -> repository.getOrThrow(id)
-        );
+        var exception = assertThrows(PaymentNotFoundException.class, () -> repository.getOrThrow(id));
 
         assertThat(exception.getMessage(), containsString(id.toString()));
     }
