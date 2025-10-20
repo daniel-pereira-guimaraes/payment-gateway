@@ -29,23 +29,45 @@ public class CreateUserController {
     @Operation(
             summary = "Cria um usuário",
             description = "Cria um novo usuário com nome, CPF, e-mail e senha",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Dados do usuário",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Request.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Joao Silva",
+                                            value = """
+                                                {
+                                                  "name": "Joao Silva",
+                                                  "cpf": "12312312387",
+                                                  "emailAddress": "joao.silva@email.com",
+                                                  "password": "Senha!12345"
+                                                }
+                                                """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Maria Souza",
+                                            value = """
+                                                {
+                                                  "name": "Maria Souza",
+                                                  "cpf": "32132132178",
+                                                  "emailAddress": "maria@email.com",
+                                                  "password": "Senha!54321"
+                                                }
+                                                """
+                                    )
+                            }
+                    )
+            ),
             responses = {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Usuário criado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = Response.class),
-                                    examples = @ExampleObject(
-                                            value = """
-                                                    {
-                                                      "id": 1,
-                                                      "name": "Joao Silva",
-                                                      "cpf": "12312312387",
-                                                      "emailAddress": "joao.silva@email.com"
-                                                    }
-                                                    """
-                                    )
+                                    schema = @Schema(implementation = Response.class)
                             )
                     ),
                     @ApiResponse(
@@ -71,6 +93,7 @@ public class CreateUserController {
         var user = createUserUseCase.createUser(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(user));
     }
+
 
     @Schema(name = "CreateUserRequest", description = "Corpo da requisição para criar usuário")
     public record Request(
