@@ -17,10 +17,34 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO: Falta definir como garantir a segurança dos dados de cartão!
+
+/*
+  SOLUÇÕES PROPOSTAS:
+
+  1. NUNCA GRAVAR DADOS DO CARTÃO NO PRÓPRIO BANCO DE DADOS:
+
+  1.1. Não gravar os dados do cartão, mas apenas repassá-los para o autorizador.
+
+  1.2. O autorizador deve retornar um ID da autorização de pagamento, que seria salvo
+       no banco de dados para ser usado em eventual cancelamento posterior.
+
+  2. OU SALVAR APENAS HASH DO NÚMERO DO CARTÃO:
+
+  2.1. Esse hash do número do cartão poderia ser passado para o autorizador
+       numa eventual solicitação de cancelamento do pagamento, se necessário.
+
+  2.2. Essa solução não me agrada, pois é menos segura que a primeira opção.
+
+  Mas em linhas gerais, o recomendado é EVITAR a gravação de dados sensíveis,
+  especialmente dados de cartão, no próprio banco de dados, uma vez que é
+  perfeitamente possível deixar o tratamento desses dados sob responsabilidade
+  apenas do autorizador.
+*/
+
 @Repository
 public class JdbcPaymentRepository implements PaymentRepository {
 
-    // TODO: Remover dados do cartão do banco, por questão de segurança.
     private static final String SQL_INSERT = """
             INSERT INTO tb_payment (charge_id, paid_at, method, credit_card_number, credit_card_expiration, credit_card_cvv)
             VALUES (:chargeId, :paidAt, :method, :creditCardNumber, :creditCardExpiration, :creditCardCvv)
@@ -36,9 +60,14 @@ public class JdbcPaymentRepository implements PaymentRepository {
             WHERE id = :id
             """;
 
+    private static final String SQL_BASE =
+            "SELECT id, charge_id, paid_at, method, credit_card_number, credit_card_expiration, credit_card_cvv FROM tb_payment";
+
     private static final String SQL_SELECT_BY_ID =
-            "SELECT id, charge_id, paid_at, method, credit_card_number, credit_card_expiration, credit_card_cvv " +
-                    "FROM tb_payment WHERE id = :id";
+            SQL_BASE + " WHERE id = :id";
+
+    private static final String SQL_SELECT_BY_CHARGE_ID =
+            SQL_BASE + " WHERE charge_id = :chargeId";
 
     private static final String SQL_EXISTS_BY_CHARGE_ID =
             "SELECT 1 FROM tb_payment WHERE charge_id = :chargeId";
@@ -57,6 +86,16 @@ public class JdbcPaymentRepository implements PaymentRepository {
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
+        }
+    }
+
+    @Override
+    public Optional<Payment> get(ChargeId chargeId) {
+        try {
+            var params = Map.of("chargeId", chargeId.value());
+            return Optional.ofNullable(jdbc.queryForObject(SQL_SELECT_BY_CHARGE_ID, params, (rs, rowNum) -> mapPayment(rs)));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 
