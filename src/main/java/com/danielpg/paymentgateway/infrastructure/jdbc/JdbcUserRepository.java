@@ -64,6 +64,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public void save(User user) {
+        //TODO: Lançar exception de duplicação, herdada de IllegalStateException
         if (user.id() == null) {
             var keyHolder = new CustomKeyHolder();
             jdbc.update(SQL_INSERT, commonParams(user), keyHolder);
