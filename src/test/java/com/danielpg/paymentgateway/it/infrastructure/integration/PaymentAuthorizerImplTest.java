@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
@@ -44,12 +45,12 @@ class PaymentAuthorizerImplTest {
     }
 
     @Test
-    void authorizesPaymentSuccessfully() {
+    void authorizePaymentSuccessfully() {
         var response = new PaymentAuthorizerImpl.Response(
                 "success", new PaymentAuthorizerImpl.Data(true));
 
         when(restTemplate.getForObject(
-                eq(expectedUri()),
+                eq(expectedPaymentUri()),
                 eq(PaymentAuthorizerImpl.Response.class)))
                 .thenReturn(response);
 
@@ -63,7 +64,7 @@ class PaymentAuthorizerImplTest {
         );
 
         when(restTemplate.getForObject(
-                eq(expectedUri()),
+                eq(expectedPaymentUri()),
                 eq(PaymentAuthorizerImpl.Response.class)))
                 .thenReturn(response);
 
@@ -74,9 +75,9 @@ class PaymentAuthorizerImplTest {
     }
 
     @Test
-    void throwExceptionWhenNullResponse() {
+    void throwExceptionWhenNullResponseForPayment() {
         when(restTemplate.getForObject(
-                eq(expectedUri()),
+                eq(expectedPaymentUri()),
                 eq(PaymentAuthorizerImpl.Response.class)))
                 .thenReturn(null);
 
@@ -86,7 +87,50 @@ class PaymentAuthorizerImplTest {
         assertEquals("Resposta inesperada do autorizador.", ex.getMessage());
     }
 
-    private URI expectedUri() {
+    @Test
+    void authorizeCancellationSuccessfully() {
+        var response = new PaymentAuthorizerImpl.Response(
+                "success", new PaymentAuthorizerImpl.Data(true));
+
+        when(restTemplate.getForObject(
+                eq(expectedCancelUri()),
+                eq(PaymentAuthorizerImpl.Response.class)))
+                .thenReturn(response);
+
+        assertDoesNotThrow(() -> authorizer.authorizeCancellation(charge, creditCard));
+    }
+
+    @Test
+    void throwsExceptionWhenCancellationIsNotAuthorized() {
+        var response = new PaymentAuthorizerImpl.Response(
+                "success", new PaymentAuthorizerImpl.Data(false)
+        );
+
+        when(restTemplate.getForObject(
+                eq(expectedCancelUri()),
+                eq(PaymentAuthorizerImpl.Response.class)))
+                .thenReturn(response);
+
+        var ex = assertThrows(PaymentNotAuthorizedException.class,
+                () -> authorizer.authorizeCancellation(charge, creditCard));
+
+        assertEquals("Cancelamento não autorizado.", ex.getMessage());
+    }
+
+    @Test
+    void throwExceptionWhenNullResponseForCancellation() {
+        when(restTemplate.getForObject(
+                eq(expectedCancelUri()),
+                eq(PaymentAuthorizerImpl.Response.class)))
+                .thenReturn(null);
+
+        var ex = assertThrows(PaymentNotAuthorizedException.class,
+                () -> authorizer.authorizeCancellation(charge, creditCard));
+
+        assertEquals("Resposta inesperada do autorizador.", ex.getMessage());
+    }
+
+    private URI expectedPaymentUri() {
         return URI.create(EXPECTED_URI_PATTERN.formatted(
                 authorizerUrl,
                 charge.amount().value().toString(),
@@ -94,5 +138,12 @@ class PaymentAuthorizerImplTest {
                 creditCard.expirationDate().value(),
                 creditCard.cvv().value()
         ));
+    }
+
+    private URI expectedCancelUri() {
+        return UriComponentsBuilder.fromUri(expectedPaymentUri())
+                .queryParam("cancel", true)
+                .build()
+                .toUri();
     }
 }

@@ -31,10 +31,19 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
 
     @Override
     public void authorizePayment(Charge charge, CreditCard creditCard) {
-        LOGGER.info("Consultando autorizador: chargeId={}", charge.id());
+        authorize(charge, creditCard, false);
+    }
+
+    @Override
+    public void authorizeCancellation(Charge charge, CreditCard creditCard) {
+        authorize(charge, creditCard, true);
+    }
+
+    private void authorize(Charge charge, CreditCard creditCard, boolean cancel) {
+        LOGGER.info("Consultando autorizador: chargeId={}, cancel={}", charge.id(), cancel);
         validateAuthorizerUrl();
 
-        var finalUri = buildFinalUri(charge, creditCard);
+        var finalUri = buildFinalUri(charge, creditCard, cancel);
         LOGGER.info("{}", finalUri); // TODO: remover!
         var response = restTemplate.getForObject(finalUri, Response.class);
 
@@ -44,7 +53,10 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
         }
 
         if (!response.data.authorized) {
-            throw new PaymentNotAuthorizedException("Pagamento não autorizado.");
+            throw new PaymentNotAuthorizedException(cancel
+                    ? "Cancelamento não autorizado."
+                    : "Pagamento não autorizado."
+            );
         }
     }
 
@@ -60,14 +72,18 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
         }
     }
 
-    private URI buildFinalUri(Charge charge, CreditCard creditCard) {
-        return UriComponentsBuilder.fromUriString(authorizerUrl)
+    private URI buildFinalUri(Charge charge, CreditCard creditCard, boolean cancel) {
+        var builder = UriComponentsBuilder.fromUriString(authorizerUrl)
                 .queryParam("amount", charge.amount().value())
                 .queryParam("cardNumber", creditCard.number().value())
                 .queryParam("cardExpiration", creditCard.expirationDate().value())
-                .queryParam("cardCvv", creditCard.cvv().value())
-                .build()
-                .toUri();
+                .queryParam("cardCvv", creditCard.cvv().value());
+
+        if (cancel) {
+            builder.queryParam("cancel", true);
+        }
+
+        return builder.build().toUri();
     }
 
     public record Response(String status, Data data) {}
