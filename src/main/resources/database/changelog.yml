@@ -155,3 +155,39 @@ databaseChangeLog:
             tableName: tb_payment
             columnNames: charge_id
             constraintName: uq_payment_charge_id
+
+  - changeSet:
+      id: 5
+      author: daniel
+      changes:
+        - createTable:
+            tableName: tb_deposit
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: tb_deposit
+            baseColumnNames: user_id
+            referencedTableName: tb_user
+            referencedColumnNames: id
+            constraintName: fk_deposit_user
