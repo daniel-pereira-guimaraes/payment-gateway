@@ -3,6 +3,7 @@ package com.danielpg.paymentgateway.infrastructure.integration;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentAuthorizer;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentNotAuthorizedException;
+import com.danielpg.paymentgateway.domain.deposit.Deposit;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
 
@@ -31,20 +33,25 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
 
     @Override
     public void authorizePayment(Charge charge, CreditCard creditCard) {
-        authorize(charge, creditCard, false);
+        authorizeGeneric(charge.id().value(), charge.amount().value(), creditCard, OperationType.PAYMENT);
     }
 
     @Override
     public void authorizeCancellation(Charge charge, CreditCard creditCard) {
-        authorize(charge, creditCard, true);
+        authorizeGeneric(charge.id().value(), charge.amount().value(), creditCard, OperationType.CANCEL_PAYMENT);
     }
 
-    private void authorize(Charge charge, CreditCard creditCard, boolean cancel) {
-        LOGGER.info("Consultando autorizador: chargeId={}, cancel={}", charge.id(), cancel);
+    @Override
+    public void authorizeDeposit(Deposit deposit) {
+        authorizeGeneric(deposit.id().value(), deposit.amount().value(), null, OperationType.DEPOSIT);
+    }
+
+    private void authorizeGeneric(Long id, BigDecimal amount, CreditCard creditCard, OperationType operation) {
+        LOGGER.info("Consultando autorizador: id={}, operation={}", id, operation);
         validateAuthorizerUrl();
 
-        var finalUri = buildFinalUri(charge, creditCard, cancel);
-        LOGGER.info("{}", finalUri); // TODO: remover!
+        var finalUri = buildUri(amount, creditCard, operation);
+        LOGGER.info("{}", finalUri);
         var response = restTemplate.getForObject(finalUri, Response.class);
 
         if (response == null || response.data == null || response.data.authorized == null) {
@@ -53,10 +60,11 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
         }
 
         if (!response.data.authorized) {
-            throw new PaymentNotAuthorizedException(cancel
-                    ? "Cancelamento não autorizado."
-                    : "Pagamento não autorizado."
-            );
+            throw new PaymentNotAuthorizedException(switch (operation) {
+                case PAYMENT -> "Pagamento não autorizado.";
+                case CANCEL_PAYMENT -> "Cancelamento não autorizado.";
+                case DEPOSIT -> "Depósito não autorizado.";
+            });
         }
     }
 
@@ -72,20 +80,29 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
         }
     }
 
-    private URI buildFinalUri(Charge charge, CreditCard creditCard, boolean cancel) {
+    private URI buildUri(BigDecimal amount, CreditCard creditCard, OperationType operation) {
         var builder = UriComponentsBuilder.fromUriString(authorizerUrl)
-                .queryParam("amount", charge.amount().value())
-                .queryParam("cardNumber", creditCard.number().value())
-                .queryParam("cardExpiration", creditCard.expirationDate().value())
-                .queryParam("cardCvv", creditCard.cvv().value());
+                .queryParam("amount", amount)
+                .queryParam("operationType", operation.name());
 
-        if (cancel) {
-            builder.queryParam("cancel", true);
+        if (creditCard != null) {
+            builder.queryParam("cardNumber", creditCard.number().value())
+                    .queryParam("cardExpiration", creditCard.expirationDate().value())
+                    .queryParam("cardCvv", creditCard.cvv().value());
         }
 
         return builder.build().toUri();
     }
 
-    public record Response(String status, Data data) {}
-    public record Data(Boolean authorized) {}
+    public record Response(String status, Data data) {
+    }
+
+    public record Data(Boolean authorized) {
+    }
+
+    private enum OperationType {
+        PAYMENT,
+        CANCEL_PAYMENT,
+        DEPOSIT
+    }
 }
