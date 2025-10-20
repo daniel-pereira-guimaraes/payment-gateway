@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.infrastructure.jdbc;
 
 import com.danielpg.paymentgateway.domain.user.*;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -64,14 +65,17 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public void save(User user) {
-        //TODO: Lançar exception de duplicação, herdada de IllegalStateException
-        if (user.id() == null) {
-            var keyHolder = new CustomKeyHolder();
-            jdbc.update(SQL_INSERT, commonParams(user), keyHolder);
-            user.finalizeCreation(UserId.of(keyHolder.asLong()));
-        } else {
-            var params = commonParams(user).addValue("id", user.id().value());
-            jdbc.update(SQL_UPDATE, params);
+        try {
+            if (user.id() == null) {
+                var keyHolder = new CustomKeyHolder();
+                jdbc.update(SQL_INSERT, commonParams(user), keyHolder);
+                user.finalizeCreation(UserId.of(keyHolder.asLong()));
+            } else {
+                var params = commonParams(user).addValue("id", user.id().value());
+                jdbc.update(SQL_UPDATE, params);
+            }
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("Já existe um usuário com mesmo CPF ou e-mail", e);
         }
     }
 
