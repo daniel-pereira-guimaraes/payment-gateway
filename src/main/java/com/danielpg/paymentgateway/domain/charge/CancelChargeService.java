@@ -1,33 +1,30 @@
-package com.danielpg.paymentgateway.domain.charge.payment;
+package com.danielpg.paymentgateway.domain.charge;
 
-import com.danielpg.paymentgateway.domain.charge.Charge;
-import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentAuthorizer;
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
 import com.danielpg.paymentgateway.domain.user.UserRepository;
 
-public class CancelPaymentService {
+public class CancelChargeService {
 
     private final ChargeRepository chargeRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentAuthorizer paymentAuthorizer;
 
-    public CancelPaymentService(ChargeRepository chargeRepository,
-                                UserRepository userRepository,
-                                PaymentRepository paymentRepository,
-                                PaymentAuthorizer paymentAuthorizer) {
+    public CancelChargeService(ChargeRepository chargeRepository,
+                               UserRepository userRepository,
+                               PaymentRepository paymentRepository,
+                               PaymentAuthorizer paymentAuthorizer) {
         this.chargeRepository = chargeRepository;
         this.userRepository = userRepository;
         this.paymentRepository = paymentRepository;
         this.paymentAuthorizer = paymentAuthorizer;
     }
 
-    public void cancelPayment(PaymentId paymentId) {
-        var payment = paymentRepository.getOrThrow(paymentId);
-        var charge = chargeRepository.getOrThrow(payment.chargeId());
-
+    public void cancelCharge(Charge charge) {
         switch (charge.status()) {
             case PENDING -> cancelPendingCharge(charge);
-            case PAID -> cancelPaidCharge(charge, payment);
+            case PAID -> cancelPaidCharge(charge);
             default -> throw new IllegalStateException(
                     "A cobrança não pode ser cancelada no status atual: " + charge.status());
         }
@@ -39,12 +36,19 @@ public class CancelPaymentService {
         charge.changeStatusToCanceled();
     }
 
-    private void cancelPaidCharge(Charge charge, Payment payment) {
-        if (payment.method() == PaymentMethod.BALANCE) {
-            refundBalance(charge);
-        } else if (payment.method() == PaymentMethod.CREDIT_CARD) {
-            paymentAuthorizer.authorizeCancellation(charge, payment.creditCard());
+    private void cancelPaidCharge(Charge charge) {
+        var paymentOpt = paymentRepository.get(charge.id());
+
+        if (paymentOpt.isPresent()) {
+            var payment = paymentOpt.get();
+
+            switch (payment.method()) {
+                case BALANCE -> refundBalance(charge);
+                case CREDIT_CARD -> paymentAuthorizer.authorizeCancellation(charge, payment.creditCard());
+                default -> throw new IllegalStateException("Método de pagamento desconhecido: " + payment.method());
+            }
         }
+
         charge.changeStatusToCanceled();
     }
 
@@ -52,8 +56,8 @@ public class CancelPaymentService {
         var issuer = userRepository.getOrThrow(charge.issuerId());
         var payer = userRepository.getOrThrow(charge.payerId());
 
-        payer.increaseBalance(charge.amount());
         issuer.decreaseBalance(charge.amount());
+        payer.increaseBalance(charge.amount());
 
         userRepository.save(issuer);
         userRepository.save(payer);

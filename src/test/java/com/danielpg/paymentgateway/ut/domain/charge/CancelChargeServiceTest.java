@@ -1,9 +1,11 @@
-package com.danielpg.paymentgateway.ut.domain.charge.payment;
+package com.danielpg.paymentgateway.ut.domain.charge;
 
+import com.danielpg.paymentgateway.domain.charge.CancelChargeService;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.payment.*;
+import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Balance;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.domain.user.UserRepository;
@@ -14,37 +16,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static com.danielpg.paymentgateway.fixture.ChargeFixture.ISSUER_ID;
 import static com.danielpg.paymentgateway.fixture.ChargeFixture.PAYER_ID;
+import static com.danielpg.paymentgateway.fixture.PaymentFixture.PAID_AT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class CancelPaymentServiceTest {
+class CancelChargeServiceTest {
 
     private ChargeRepository chargeRepository;
     private UserRepository userRepository;
     private PaymentRepository paymentRepository;
     private PaymentAuthorizer paymentAuthorizer;
-    private CancelPaymentService service;
+    private CancelChargeService service;
 
     private Charge pendingCharge;
     private Charge paidChargeBalance;
     private Charge paidChargeCard;
     private Payment paymentBalance;
     private Payment paymentCard;
-
-    private static final User ISSUER = UserFixture.builder()
-            .withId(ISSUER_ID)
-            .withBalance(Balance.of(new BigDecimal("10.00")))
-            .build();
-
-    private static final User PAYER = UserFixture.builder()
-            .withId(PAYER_ID)
-            .withBalance(Balance.of(new BigDecimal("10.00")))
-            .build();
+    private User issuer;
+    private User payer;
 
     @BeforeEach
     void setup() {
@@ -53,16 +49,26 @@ class CancelPaymentServiceTest {
         paymentRepository = mock(PaymentRepository.class);
         paymentAuthorizer = mock(PaymentAuthorizer.class);
 
-        service = new CancelPaymentService(chargeRepository, userRepository, paymentRepository, paymentAuthorizer);
+        service = new CancelChargeService(chargeRepository, userRepository, paymentRepository, paymentAuthorizer);
 
-        pendingCharge = ChargeFixture.builder().withStatus(ChargeStatus.PENDING).build();
-        paidChargeBalance = ChargeFixture.builder().withStatus(ChargeStatus.PAID).build();
-        paidChargeCard = ChargeFixture.builder().withStatus(ChargeStatus.PAID).build();
+        pendingCharge = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PENDING)
+                .build();
+
+        paidChargeBalance = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PAID)
+                .withAmount(PositiveMoney.of(BigDecimal.TWO))
+                .build();
+
+        paidChargeCard = ChargeFixture.builder()
+                .withStatus(ChargeStatus.PAID)
+                .build();
 
         paymentBalance = Payment.builder()
                 .withId(PaymentId.of(1L))
                 .withChargeId(paidChargeBalance.id())
                 .withMethod(PaymentMethod.BALANCE)
+                .withPaidAt(PAID_AT)
                 .build();
 
         paymentCard = Payment.builder()
@@ -70,47 +76,56 @@ class CancelPaymentServiceTest {
                 .withChargeId(paidChargeCard.id())
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(CreditCardFixture.builder().build())
+                .withPaidAt(PAID_AT)
                 .build();
 
-        when(userRepository.getOrThrow(ISSUER.id())).thenReturn(ISSUER);
-        when(userRepository.getOrThrow(PAYER.id())).thenReturn(PAYER);
+        issuer = UserFixture.builder()
+                .withId(ISSUER_ID)
+                .withBalance(Balance.of(new BigDecimal("20.00")))
+                .build();
+
+        payer = UserFixture.builder()
+                .withId(PAYER_ID)
+                .withBalance(Balance.of(new BigDecimal("10.00")))
+                .build();
+
+        when(userRepository.getOrThrow(issuer.id())).thenReturn(issuer);
+        when(userRepository.getOrThrow(payer.id())).thenReturn(payer);
     }
 
     @Test
     void cancelsPendingCharge() {
-        when(paymentRepository.getOrThrow(any())).thenReturn(Payment.builder().withChargeId(pendingCharge.id()).build());
-        when(chargeRepository.getOrThrow(any())).thenReturn(pendingCharge);
-
-        service.cancelPayment(PaymentId.of(100L));
+        service.cancelCharge(pendingCharge);
 
         assertThat(pendingCharge.status(), is(ChargeStatus.CANCELED));
         verify(chargeRepository).save(pendingCharge);
         verifyNoInteractions(userRepository);
-        verify(paymentAuthorizer, never()).authorizeCancellation(any(), any());
+        verifyNoInteractions(paymentRepository);
+        verifyNoInteractions(paymentAuthorizer);
     }
 
     @Test
     void cancelsPaidChargeWithBalanceAndUpdatesUsers() {
-        when(paymentRepository.getOrThrow(paymentBalance.id())).thenReturn(paymentBalance);
-        when(chargeRepository.getOrThrow(paymentBalance.chargeId())).thenReturn(paidChargeBalance);
+        when(paymentRepository.get(paidChargeBalance.id()))
+                .thenReturn(Optional.of(paymentBalance));
 
-        service.cancelPayment(paymentBalance.id());
+        service.cancelCharge(paidChargeBalance);
 
         assertThat(paidChargeBalance.status(), is(ChargeStatus.CANCELED));
-        assertThat(PAYER.balance().value(), is(new BigDecimal("11.00")));
-        assertThat(ISSUER.balance().value(), is(new BigDecimal("9.00")));
+        assertThat(issuer.balance().value(), is(new BigDecimal("18.00")));
+        assertThat(payer.balance().value(), is(new BigDecimal("12.00")));
         verify(chargeRepository).save(paidChargeBalance);
-        verify(userRepository).save(ISSUER);
-        verify(userRepository).save(PAYER);
+        verify(userRepository).save(issuer);
+        verify(userRepository).save(payer);
         verifyNoInteractions(paymentAuthorizer);
     }
 
     @Test
     void cancelsPaidChargeWithCreditCardAndCallsAuthorizer() {
-        when(paymentRepository.getOrThrow(paymentCard.id())).thenReturn(paymentCard);
-        when(chargeRepository.getOrThrow(paymentCard.chargeId())).thenReturn(paidChargeCard);
+        when(paymentRepository.get(paidChargeCard.id()))
+                .thenReturn(Optional.of(paymentCard));
 
-        service.cancelPayment(paymentCard.id());
+        service.cancelCharge(paidChargeCard);
 
         assertThat(paidChargeCard.status(), is(ChargeStatus.CANCELED));
         verify(paymentAuthorizer).authorizeCancellation(paidChargeCard, paymentCard.creditCard());
@@ -121,13 +136,9 @@ class CancelPaymentServiceTest {
     @Test
     void throwsExceptionWhenChargeStatusCannotBeCanceled() {
         var canceledCharge = ChargeFixture.builder().withStatus(ChargeStatus.CANCELED).build();
-        var payment = Payment.builder().withChargeId(canceledCharge.id()).build();
-
-        when(paymentRepository.getOrThrow(payment.id())).thenReturn(payment);
-        when(chargeRepository.getOrThrow(payment.chargeId())).thenReturn(canceledCharge);
 
         var ex = assertThrows(IllegalStateException.class,
-                () -> service.cancelPayment(payment.id())
+                () -> service.cancelCharge(canceledCharge)
         );
 
         assertThat(ex.getMessage(), is("A cobrança não pode ser cancelada no status atual: " + canceledCharge.status()));
