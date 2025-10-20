@@ -34,22 +34,40 @@ public class LoginController {
                             schema = @Schema(implementation = Request.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "Login com CPF",
+                                            name = "Login com CPF do João",
                                             value = """
-                                            {
-                                              "cpf": "12312312387",
-                                              "password": "Senha!12345"
-                                            }
-                                            """
+                                                    {
+                                                      "cpf": "12312312387",
+                                                      "password": "Senha!12345"
+                                                    }
+                                                    """
                                     ),
                                     @ExampleObject(
-                                            name = "Login com E-mail",
+                                            name = "Login com CPF da Maria",
                                             value = """
-                                            {
-                                              "emailAddress": "joao.silva@email.com",
-                                              "password": "Senha!12345"
-                                            }
-                                            """
+                                                    {
+                                                      "cpf": "32132132178",
+                                                      "password": "Senha!54321"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Login com E-mail do João",
+                                            value = """
+                                                    {
+                                                      "emailAddress": "joao.silva@email.com",
+                                                      "password": "Senha!12345"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Login com E-mail da Maria",
+                                            value = """
+                                                    {
+                                                      "emailAddress": "maria@email.com",
+                                                      "password": "Senha!54321"
+                                                    }
+                                                    """
                                     )
                             }
                     )
