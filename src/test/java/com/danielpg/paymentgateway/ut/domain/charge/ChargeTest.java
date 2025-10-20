@@ -151,7 +151,7 @@ class ChargeTest {
     }
 
     @Test
-    void changesStatusToPaidWhenPending() {
+    void changesStatusToPaidSuccessfullyWhenPending() {
         var charge = ChargeFixture.builder()
                 .withStatus(ChargeStatus.PENDING)
                 .build();
@@ -161,20 +161,9 @@ class ChargeTest {
         assertThat(charge.status(), is(ChargeStatus.PAID));
     }
 
-    @Test
-    void changesStatusToCanceledWhenPending() {
-        var charge = ChargeFixture.builder()
-                .withStatus(ChargeStatus.PENDING)
-                .build();
-
-        charge.changeStatusToCanceled();
-
-        assertThat(charge.status(), is(ChargeStatus.CANCELED));
-    }
-
     @ParameterizedTest
     @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
-    void throwsExceptionWhenChangeToPaidAndNotPending(ChargeStatus initialStatus) {
+    void changesStatusToPaidThrowsExceptionWhenNotPending(ChargeStatus initialStatus) {
         var charge = ChargeFixture.builder()
                 .withStatus(initialStatus)
                 .build();
@@ -187,21 +176,32 @@ class ChargeTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
-    void throwsExceptionWhenChangeToCanceledAndNotPending(ChargeStatus initialStatus) {
+    @EnumSource(value = ChargeStatus.class, names = "CANCELED", mode = EnumSource.Mode.EXCLUDE)
+    void changesStatusToCanceledSuccessfullyWhenNotCanceled(ChargeStatus initialStatus) {
         var charge = ChargeFixture.builder()
                 .withStatus(initialStatus)
+                .build();
+
+        charge.changeStatusToCanceled();
+
+        assertThat(charge.status(), is(ChargeStatus.CANCELED));
+    }
+
+    @Test
+    void changesStatusToCanceledThrowsExceptionWhenCanceled() {
+        var charge = ChargeFixture.builder()
+                .withStatus(ChargeStatus.CANCELED)
                 .build();
 
         var exception = assertThrows(IllegalStateException.class,
                 charge::changeStatusToCanceled
         );
 
-        assertThat(exception.getMessage(), is("A cobrança não está pendente."));
+        assertThat(exception.getMessage(), is("A cobrança já está cancelada."));
     }
 
     @Test
-    void ensurePendingStatusDoesNotThrowsWhenPendingCharge() {
+    void ensurePendingStatusDoesNotThrowWhenPending() {
         var charge = ChargeFixture.builder()
                 .withStatus(ChargeStatus.PENDING)
                 .build();
@@ -211,7 +211,7 @@ class ChargeTest {
 
     @ParameterizedTest
     @EnumSource(value = ChargeStatus.class, names = "PENDING", mode = EnumSource.Mode.EXCLUDE)
-    void ensurePendingStatusThrowsIfNotPending(ChargeStatus nonPendingStatus) {
+    void ensurePendingStatusThrowsExceptionWhenNotPending(ChargeStatus nonPendingStatus) {
         var charge = ChargeFixture.builder()
                 .withStatus(nonPendingStatus)
                 .build();
@@ -219,4 +219,38 @@ class ChargeTest {
         var exception = assertThrows(IllegalStateException.class, charge::ensurePendingStatus);
         assertThat(exception.getMessage(), is("A cobrança não está pendente."));
     }
+
+    @ParameterizedTest
+    @EnumSource(value = ChargeStatus.class, names = "CANCELED", mode = EnumSource.Mode.EXCLUDE)
+    void ensureNotCanceledStatusDoesNotThrowWhenNotCanceled(ChargeStatus status) {
+        var charge = ChargeFixture.builder().withStatus(status).build();
+
+        charge.ensureNotCanceledStatus();
+    }
+
+    @Test
+    void ensureNotCanceledStatusThrowsExceptionWhenCanceled() {
+        var charge = ChargeFixture.builder().withStatus(ChargeStatus.CANCELED).build();
+
+        var exception = assertThrows(IllegalStateException.class, charge::ensureNotCanceledStatus);
+        assertThat(exception.getMessage(), is("A cobrança já está cancelada."));
+    }
+
+    @Test
+    void equalsAndHashCodeWithSameData() {
+        var charge1 = ChargeFixture.builder().build();
+        var charge2 = ChargeFixture.builder().build();
+
+        assertThat(charge1.equals(charge2), is(true));
+        assertThat(charge1.hashCode(), is(charge2.hashCode()));
+    }
+
+    @Test
+    void equalsAndHashCodeWithDifferentData() {
+        var charge1 = ChargeFixture.builder().withId(ChargeId.of(1L)).build();
+        var charge2 = ChargeFixture.builder().withId(ChargeId.of(2L)).build();
+
+        assertThat(charge1.equals(charge2), is(false));
+    }
+
 }

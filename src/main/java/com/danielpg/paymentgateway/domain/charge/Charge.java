@@ -83,13 +83,19 @@ public class Charge {
     }
 
     public void changeStatusToCanceled() {
-        ensurePendingStatus();
+        ensureNotCanceledStatus();
         this.status = ChargeStatus.CANCELED;
     }
 
     public void ensurePendingStatus() {
         if (status != ChargeStatus.PENDING) {
             throw new IllegalStateException("A cobrança não está pendente.");
+        }
+    }
+
+    public void ensureNotCanceledStatus() {
+        if (status == ChargeStatus.CANCELED) {
+            throw new IllegalStateException("A cobrança já está cancelada.");
         }
     }
 
