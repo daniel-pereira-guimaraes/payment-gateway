@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface PaymentRepository {
     boolean exists(ChargeId chargeId);
     Optional<Payment> get(PaymentId id);
+    Payment getOrThrow(PaymentId id);
     void save(Payment payment);
 }

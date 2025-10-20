@@ -1,11 +1,8 @@
 package com.danielpg.paymentgateway.infrastructure.jdbc;
 
-import com.danielpg.paymentgateway.domain.charge.payment.PaymentMethod;
+import com.danielpg.paymentgateway.domain.charge.payment.*;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
-import com.danielpg.paymentgateway.domain.charge.payment.Payment;
-import com.danielpg.paymentgateway.domain.charge.payment.PaymentId;
-import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardCvv;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardExpirationDate;
@@ -71,6 +68,11 @@ public class JdbcPaymentRepository implements PaymentRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Payment getOrThrow(PaymentId id) {
+        return get(id).orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
     @Override

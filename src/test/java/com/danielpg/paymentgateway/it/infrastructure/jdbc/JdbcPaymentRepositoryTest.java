@@ -37,6 +37,27 @@ class JdbcPaymentRepositoryTest extends IntegrationTestBase {
     }
 
     @Test
+    void getOrThrowReturnsPaymentWhenFound() {
+        var payment = repository.getOrThrow(PaymentId.of(1L));
+
+        assertThat(payment.id().value(), is(1L));
+        assertThat(payment.chargeId().value(), is(2L));
+        assertThat(payment.paidAt().value(), is(1700007300L));
+    }
+
+    @Test
+    void getOrThrowThrowsWhenPaymentNotFound() {
+        var id = PaymentId.of(999L);
+
+        var exception = org.junit.jupiter.api.Assertions.assertThrows(
+                com.danielpg.paymentgateway.domain.charge.payment.PaymentNotFoundException.class,
+                () -> repository.getOrThrow(id)
+        );
+
+        assertThat(exception.getMessage(), containsString(id.toString()));
+    }
+
+    @Test
     void existsReturnsTrueWhenPaymentExistsForCharge() {
         assertThat(repository.exists(ChargeId.of(2L)), is(true));
     }
