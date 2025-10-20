@@ -30,7 +30,8 @@ public class FindIssuedChargesController {
             description = "Retorna as cobranças emitidas. É possível filtrar por status (opcional).",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Cobranças retornadas com sucesso", content = @Content(mediaType = "application/json")),
-                    @ApiResponse(responseCode = "400", description = "Parâmetro inválido", content = @Content(mediaType = "application/json"))
+                    @ApiResponse(responseCode = "400", description = "Parâmetro inválido", content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado", content = @Content)
             }
     )
     public ResponseEntity<FindIssuedChargesUseCase.Response> get(
