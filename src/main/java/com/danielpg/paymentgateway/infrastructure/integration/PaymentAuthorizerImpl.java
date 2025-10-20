@@ -43,7 +43,7 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
 
     @Override
     public void authorizeDeposit(Deposit deposit) {
-        authorizeGeneric(deposit.id().value(), deposit.amount().value(), null, OperationType.DEPOSIT);
+        authorizeGeneric(deposit.userId().value(), deposit.amount().value(), null, OperationType.DEPOSIT);
     }
 
     private void authorizeGeneric(Long id, BigDecimal amount, CreditCard creditCard, OperationType operation) {

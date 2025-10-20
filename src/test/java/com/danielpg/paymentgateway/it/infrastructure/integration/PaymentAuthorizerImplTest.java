@@ -49,7 +49,7 @@ class PaymentAuthorizerImplTest {
     void beforeEach() {
         charge = ChargeFixture.builder().build();
         creditCard = CreditCardFixture.builder().build();
-        deposit = DepositFixture.builder().build();
+        deposit = DepositFixture.builder().withId(null).build();
     }
 
     @Test
