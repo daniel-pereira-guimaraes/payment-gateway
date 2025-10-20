@@ -33,7 +33,9 @@ public class SecurityConfig {
                 .securityMatcher(new OrRequestMatcher(
                         new AntPathRequestMatcher("/ping", "GET"),
                         new AntPathRequestMatcher("/users", "POST"),
-                        new AntPathRequestMatcher("/auth/login", "POST")
+                        new AntPathRequestMatcher("/auth/login", "POST"),
+                        new AntPathRequestMatcher("/swagger-ui/**"),
+                        new AntPathRequestMatcher("/v3/api-docs/**")
                 ))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
