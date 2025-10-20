@@ -1,12 +1,16 @@
 package com.danielpg.paymentgateway.infrastructure.configuration;
 
+import com.danielpg.paymentgateway.application.charge.CancelChargeUseCase;
 import com.danielpg.paymentgateway.application.charge.CreateChargeUseCase;
 import com.danielpg.paymentgateway.application.charge.FindIssuedChargesUseCase;
 import com.danielpg.paymentgateway.application.charge.FindReceivedChargesUseCase;
 import com.danielpg.paymentgateway.application.shared.AppTransaction;
 import com.danielpg.paymentgateway.application.shared.RequesterProvider;
+import com.danielpg.paymentgateway.domain.charge.CancelChargeService;
 import com.danielpg.paymentgateway.domain.charge.ChargeRepository;
 import com.danielpg.paymentgateway.domain.charge.CreateChargeService;
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentAuthorizer;
+import com.danielpg.paymentgateway.domain.charge.payment.PaymentRepository;
 import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesQuery;
 import com.danielpg.paymentgateway.domain.charge.query.received.ReceivedChargesQuery;
 import com.danielpg.paymentgateway.domain.shared.AppClock;
@@ -33,6 +37,9 @@ public class ChargeContext {
     @Autowired
     private RequesterProvider requesterProvider;
 
+    @Autowired
+    private PaymentAuthorizer paymentAuthorizer;
+
     @Bean
     public CreateChargeService createChargeService() {
         return new CreateChargeService(userRepository, chargeRepository, clock);
@@ -41,6 +48,16 @@ public class ChargeContext {
     @Bean
     public CreateChargeUseCase createChargeUseCase(CreateChargeService createChargeService) {
         return new CreateChargeUseCase(transaction, requesterProvider, createChargeService);
+    }
+
+    @Bean
+    public CancelChargeService cancelChargeService(PaymentRepository paymentRepository) {
+        return new CancelChargeService(chargeRepository, userRepository, paymentRepository, paymentAuthorizer);
+    }
+
+    @Bean
+    public CancelChargeUseCase cancelChargeUseCase(CancelChargeService cancelChargeService) {
+        return new CancelChargeUseCase(transaction, chargeRepository, requesterProvider, cancelChargeService);
     }
 
     @Bean
