@@ -31,7 +31,6 @@ public class LoginController {
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = Request.class),
                             examples = {
                                     @ExampleObject(
                                             name = "Login com CPF do João",
@@ -78,7 +77,6 @@ public class LoginController {
                             description = "Login realizado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = Response.class),
                                     examples = @ExampleObject(
                                             value = """
                                                     {
@@ -93,7 +91,9 @@ public class LoginController {
                             description = "Dados inválidos",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Dados inválidos\"}")
+                                    examples = @ExampleObject(
+                                            value = "{\"message\": \"Dados inválidos\"}"
+                                    )
                             )
                     ),
                     @ApiResponse(
@@ -101,7 +101,9 @@ public class LoginController {
                             description = "Credenciais inválidas",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Usuário ou senha inválida.\"}")
+                                    examples = @ExampleObject(
+                                            value = "{\"message\": \"Usuário ou senha inválida.\"}"
+                                    )
                             )
                     )
             }
