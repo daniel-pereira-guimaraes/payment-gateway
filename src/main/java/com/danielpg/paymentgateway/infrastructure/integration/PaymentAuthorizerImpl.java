@@ -38,6 +38,17 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
 
     @Override
     public void authorizeCancellation(Charge charge, CreditCard creditCard) {
+        /*
+        IMPORTANTE!
+
+        Em um sistema real, não deveríamos salvar os dados do cartão
+        em nosso banco de dados, mas apenas um ID da autorização, que posteriormente
+        poderia ser usada aqui para pedir autorização para cancelamento.
+
+        Como este é um projeto apenas para estudo, deixei os dados do cartão
+        no banco de dados e estou passando-os ao solicitar autorização
+        para cancelamento.
+         */
         authorizeGeneric(charge.id().value(), charge.amount().value(), creditCard, OperationType.CANCEL_PAYMENT);
     }
 
