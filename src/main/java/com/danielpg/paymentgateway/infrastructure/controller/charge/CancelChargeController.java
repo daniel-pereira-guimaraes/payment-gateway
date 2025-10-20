@@ -2,6 +2,11 @@ package com.danielpg.paymentgateway.infrastructure.controller.charge;
 
 import com.danielpg.paymentgateway.application.charge.CancelChargeUseCase;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Cobrança", description = "Cancelamento de cobrança.")
 @RestController
 @RequestMapping("/charges")
 public class CancelChargeController {
@@ -19,11 +25,21 @@ public class CancelChargeController {
     private CancelChargeUseCase useCase;
 
     @PatchMapping("/{id}/cancel")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(
+            summary = "Cancela uma cobrança",
+            description = "Cancela uma cobrança existente pelo seu ID.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Cobrança cancelada com sucesso", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Cobrança não encontrada", content = @Content)
+            }
+    )
     public ResponseEntity<Void> cancel(@PathVariable Long id) {
         LOGGER.info("Cancelando cobrança: id={}", id);
         useCase.cancelCharge(ChargeId.of(id));
         LOGGER.info("Cobrança cancelada: id={}", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
