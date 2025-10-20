@@ -72,6 +72,7 @@ public class CreateUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(user));
     }
 
+    @Schema(name = "CreateUserRequest", description = "Corpo da requisição para criar usuário")
     public record Request(
             @Schema(description = "Nome do usuário", example = "Joao Silva")
             String name,
