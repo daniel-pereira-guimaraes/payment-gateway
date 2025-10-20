@@ -147,3 +147,11 @@ databaseChangeLog:
               - column:
                   name: credit_card_cvv
                   type: VARCHAR(4)
+  - changeSet:
+      id: 4
+      author: daniel
+      changes:
+        - addUniqueConstraint:
+            tableName: tb_payment
+            columnNames: charge_id
+            constraintName: uq_payment_charge_id
