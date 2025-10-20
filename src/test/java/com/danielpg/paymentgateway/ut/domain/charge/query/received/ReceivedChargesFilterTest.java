@@ -1,4 +1,4 @@
-package com.danielpg.paymentgateway.ut.domain.charge.query;
+package com.danielpg.paymentgateway.ut.domain.charge.query.received;
 
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.charge.query.received.ReceivedChargesFilter;
