@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @AutoConfigureMockMvc
 public abstract class ControllerTestBase extends IntegrationTestBase {
 
-    protected static final String USER_EMAIL = "joao.silva@email.com";
     protected static final User CURRENT_USER = User.builder()
             .withId(UserId.of(1L))
             .withName(PersonName.of("Joao Silva"))
