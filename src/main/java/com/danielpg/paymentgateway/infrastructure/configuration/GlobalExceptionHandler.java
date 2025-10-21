@@ -17,46 +17,46 @@ public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handlePublicException(
+    public ResponseEntity<AppErrorResponse> handlePublicException(
             IllegalStateException ex, WebRequest request) {
         LOGGER.error(logMessage(ex));
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(ex));
+                .body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+    public ResponseEntity<AppErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex, WebRequest request) {
         LOGGER.error(logMessage(ex));
-        return ResponseEntity.badRequest().body(new ErrorResponse(ex));
+        return ResponseEntity.badRequest().body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(
+    public ResponseEntity<AppErrorResponse> handleInvalidCredentialsException(
             InvalidCredentialsException e, WebRequest request) {
         LOGGER.error(logMessage(e));
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AppErrorResponse(e));
     }
 
     @ExceptionHandler(AccessForbiddenException.class)
-    public ResponseEntity<ErrorResponse> handleAccessForbiddenException(
+    public ResponseEntity<AppErrorResponse> handleAccessForbiddenException(
             AccessForbiddenException ex, WebRequest request) {
         LOGGER.error(logMessage(ex));
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ex));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AppErrorResponse(ex));
     }
 
 
     @ExceptionHandler(AbstractNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleAbstractNotFoundException(
+    public ResponseEntity<AppErrorResponse> handleAbstractNotFoundException(
             AbstractNotFoundException ex, WebRequest request) {
         LOGGER.error(logMessage(ex));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
+    public ResponseEntity<AppErrorResponse> handleException(Exception ex, WebRequest request) {
         LOGGER.error(logMessage(ex));
-        return ResponseEntity.internalServerError().body(new ErrorResponse("Erro inesperado no servidor."));
+        return ResponseEntity.internalServerError().body(new AppErrorResponse("Erro inesperado no servidor."));
     }
 
 

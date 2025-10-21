@@ -3,6 +3,8 @@ package com.danielpg.paymentgateway.infrastructure.controller.auth;
 import com.danielpg.paymentgateway.application.auth.LoginUseCase;
 import com.danielpg.paymentgateway.application.auth.Token;
 import com.danielpg.paymentgateway.domain.user.*;
+import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.BadRequestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,9 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "02 - Autenticação", description = "Login de usuário.")
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "02 - Autenticação")
 public class LoginController {
 
     @Autowired
@@ -77,42 +79,26 @@ public class LoginController {
                             description = "Login realizado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    examples = @ExampleObject(
-                                            value = """
-                                                    {
-                                                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                                                    }
-                                                    """
-                                    )
+                                    schema = @Schema(implementation = Response.class)
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Dados inválidos",
+                            responseCode = "404",
+                            description = "Usuário não cadastrado",
                             content = @Content(
                                     mediaType = "application/json",
-                                    examples = @ExampleObject(
-                                            value = "{\"message\": \"Dados inválidos\"}"
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Credenciais inválidas",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    examples = @ExampleObject(
-                                            value = "{\"message\": \"Usuário ou senha inválida.\"}"
-                                    )
+                                    schema = @Schema(implementation = AppErrorResponse.class)
                             )
                     )
             }
     )
+    @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
         var token = loginUseCase.login(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.OK).body(Response.of(token));
     }
 
+    @Schema(name = "LoginRequest")
     public record Request(
             @Schema(description = "E-mail do usuário", example = "joao.silva@email.com")
             String emailAddress,
@@ -130,6 +116,7 @@ public class LoginController {
         }
     }
 
+    @Schema(name = "LoginResponse")
     public record Response(
             @Schema(description = "Token JWT", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
             String token

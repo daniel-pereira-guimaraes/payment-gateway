@@ -3,6 +3,8 @@ package com.danielpg.paymentgateway.infrastructure.controller.user;
 import com.danielpg.paymentgateway.application.user.CreateUserUseCase;
 import com.danielpg.paymentgateway.domain.shared.DataMasking;
 import com.danielpg.paymentgateway.domain.user.*;
+import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.BadRequestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -16,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "01 - Usuário", description = "Criação de usuário.")
+@Tag(name = "01 - Usuários")
 @RestController
 @RequestMapping("/users")
 public class CreateUserController {
@@ -37,7 +39,6 @@ public class CreateUserController {
                             schema = @Schema(implementation = Request.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "Joao Silva",
                                             value = """
                                                 {
                                                   "name": "Joao Silva",
@@ -48,7 +49,6 @@ public class CreateUserController {
                                                 """
                                     ),
                                     @ExampleObject(
-                                            name = "Maria Souza",
                                             value = """
                                                 {
                                                   "name": "Maria Souza",
@@ -71,23 +71,16 @@ public class CreateUserController {
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Dados inválidos",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Mensagem de erro\"}")
-                            )
-                    ),
-                    @ApiResponse(
                             responseCode = "409",
                             description = "Usuário já existe",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Mensagem de erro\"}")
+                                    schema = @Schema(implementation = AppErrorResponse.class)
                             )
                     )
             }
     )
+    @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
         LOGGER.info("Criando usuário: email={}", DataMasking.maskEmail(request.emailAddress));
         var user = createUserUseCase.createUser(request.toUseCaseRequest());
@@ -95,7 +88,7 @@ public class CreateUserController {
     }
 
 
-    @Schema(name = "CreateUserRequest", description = "Corpo da requisição para criar usuário")
+    @Schema(name = "CreateUserRequest")
     public record Request(
             @Schema(description = "Nome do usuário", example = "Joao Silva")
             String name,
@@ -116,6 +109,7 @@ public class CreateUserController {
         }
     }
 
+    @Schema(name = "CreateUserResponse")
     public record Response(
             @Schema(description = "ID do usuário", example = "1")
             Long id,

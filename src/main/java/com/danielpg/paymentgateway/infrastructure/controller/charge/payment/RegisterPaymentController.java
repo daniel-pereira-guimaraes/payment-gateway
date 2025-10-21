@@ -8,8 +8,13 @@ import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardCvv;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardExpirationDate;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCardNumber;
+import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.BadRequestResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.ForbiddenResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.UnauthorizedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,12 +22,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payments")
-@Tag(name = "Pagamentos", description = "Registro de pagamento")
+@Tag(name = "05 - Pagamentos")
 public class RegisterPaymentController {
 
     @Autowired
@@ -31,14 +35,39 @@ public class RegisterPaymentController {
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(
-            summary = "Registra um pagamento",
+            summary = "Registra o pagamento de uma cobrança",
             description = "Registra um pagamento com saldo próprio ou cartão.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     description = "Dados necessários para registrar o pagamento",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = Request.class)
+                            schema = @Schema(implementation = Request.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Pagamento com saldo",
+                                            value = """
+                                            {
+                                              "chargeId": 1,
+                                              "method": "BALANCE"
+                                            }
+                                            """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Pagamento com cartão",
+                                            value = """
+                                            {
+                                              "chargeId": 2,
+                                              "method": "CREDIT_CARD",
+                                              "creditCard": {
+                                                "number": "4111111111111111",
+                                                "expirationDate": "05/2030",
+                                                "cvv": "123"
+                                              }
+                                            }
+                                            """
+                                    )
+                            }
                     )
             ),
             responses = {
@@ -51,29 +80,26 @@ public class RegisterPaymentController {
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Dados inválidos"
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Usuário não autenticado",
-                            content = @Content
-                    ),
-                    @ApiResponse(
                             responseCode = "404",
                             description = "Emitente ou pagador não cadastrado",
-                            content = @Content(mediaType = "application/json")
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppErrorResponse.class)
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "409",
                             description = "Pagamento não autorizado",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ErrorResponse.class)
+                                    schema = @Schema(implementation = AppErrorResponse.class)
                             )
                     )
             }
     )
+    @UnauthorizedResponse
+    @BadRequestResponse
+    @ForbiddenResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
         var payment = useCase.registerPayment(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(payment));
@@ -85,7 +111,7 @@ public class RegisterPaymentController {
             Long chargeId,
             @Schema(description = "Método de pagamento", allowableValues = {"BALANCE", "CREDIT_CARD"})
             PaymentMethod method,
-            @Schema(description = "Dados do cartão")
+            @Schema(description = "Dados do cartão (obrigatório somente para CREDIT_CARD)")
             RequestCreditCard creditCard) {
 
         public RegisterPaymentUseCase.Request toUseCaseRequest() {
@@ -100,10 +126,7 @@ public class RegisterPaymentController {
     public record RequestCreditCard(
             @Schema(description = "Número do cartão", example = "4111111111111111")
             String number,
-            @Schema(
-                    description = "Data de expiração do cartão no formato MM/AA ou MM/AAAA",
-                    example = "05/2030"
-            )
+            @Schema(description = "Data de expiração do cartão no formato MM/AA ou MM/AAAA", example = "05/2030")
             String expirationDate,
             @Schema(description = "Código de segurança (CVV) do cartão", example = "123")
             String cvv) {

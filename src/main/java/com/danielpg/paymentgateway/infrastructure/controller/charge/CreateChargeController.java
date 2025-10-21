@@ -6,9 +6,11 @@ import com.danielpg.paymentgateway.domain.charge.ChargeDescription;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
+import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.BadRequestResponse;
+import com.danielpg.paymentgateway.infrastructure.configuration.swagger.UnauthorizedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
-@Tag(name = "03 - Cobrança", description = "Criação de cobrança (endpoint protegido).")
+@Tag(name = "04 - Cobranças")
 @RestController
 @RequestMapping("/charges")
 public class CreateChargeController {
@@ -32,60 +34,39 @@ public class CreateChargeController {
     @SecurityRequirement(name = "bearerAuth")
     @Operation(
             summary = "Cria uma cobrança",
-            description = "Cria uma nova cobrança para um usuário específico. Endpoint protegido, é necessário enviar token JWT no header Authorization.",
+            description = "Cria uma nova cobrança para um usuário específico",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "Cobrança criada com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = Response.class),
-                                    examples = @ExampleObject(
-                                            value = """
-                                                    {
-                                                      "id": 1,
-                                                      "issuerId": 1,
-                                                      "payerId": 2,
-                                                      "amount": 5000.00,
-                                                      "description": "Compra de material de escritório",
-                                                      "createdAt": 1700000000,
-                                                      "dueAt": 1700003600,
-                                                      "status": "PENDING"
-                                                    }
-                                                    """
-                                    )
+                                    schema = @Schema(implementation = Response.class)
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Dados inválidos",
+                            responseCode = "404",
+                            description = "Pagador não cadastrado",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Mensagem de erro\"}")
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Não autorizado / token ausente ou inválido",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(example = "{\"message\": \"Mensagem de erro\"}")
+                                    schema = @Schema(implementation = AppErrorResponse.class)
                             )
                     )
             }
     )
+    @UnauthorizedResponse
+    @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
         var charge = useCase.createCharge(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(charge));
     }
 
-    @Schema(name = "CreateChargeRequest", description = "Corpo da requisição para criar uma cobrança")
+    @Schema(name = "CreateChargeRequest")
     public record Request(
             @Schema(description = "CPF do pagador", example = "32132132178")
             String payerCpf,
             @Schema(description = "Valor da cobrança", example = "5000.00")
             BigDecimal amount,
-            @Schema(description = "Descrição da cobrança", example = "Compra de material de escritório")
+            @Schema(description = "Descrição da cobrança", example = "Compra de material de escritório", nullable = true)
             String description) {
 
         CreateChargeUseCase.Request toUseCaseRequest() {
@@ -97,6 +78,7 @@ public class CreateChargeController {
         }
     }
 
+    @Schema(name = "CreateChargeResponse")
     public record Response(
             @Schema(description = "ID da cobrança", example = "1")
             Long id,
