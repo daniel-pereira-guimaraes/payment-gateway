@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.infrastructure.controller.user;
 
+import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.application.user.GetCurrentUserUseCase;
 import com.danielpg.paymentgateway.domain.user.User;
 import com.danielpg.paymentgateway.infrastructure.configuration.swagger.BadRequestResponse;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +26,16 @@ import java.math.BigDecimal;
 @Tag(name = "01 - Usuários")
 public class GetCurrentUserController {
 
-    @Autowired
-    private GetCurrentUserUseCase useCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetCurrentUserController.class);
+
+    private final GetCurrentUserUseCase useCase;
+    private final RequesterProvider requesterProvider;
+
+    public GetCurrentUserController(GetCurrentUserUseCase useCase,
+                                    RequesterProvider requesterProvider) {
+        this.useCase = useCase;
+        this.requesterProvider = requesterProvider;
+    }
 
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -44,6 +55,7 @@ public class GetCurrentUserController {
     @UnauthorizedResponse
     @BadRequestResponse
     public ResponseEntity<Response> get() {
+        LOGGER.info("Obtendo dados do usuário corrente: userId={}", requesterProvider.requesterId());
         var user = useCase.getCurrentUser();
         return ResponseEntity.ok(Response.of(user));
     }

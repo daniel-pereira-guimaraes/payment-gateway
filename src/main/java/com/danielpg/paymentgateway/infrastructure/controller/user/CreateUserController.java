@@ -82,7 +82,10 @@ public class CreateUserController {
     )
     @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
-        LOGGER.info("Criando usuário: email={}", DataMasking.maskEmail(request.emailAddress));
+        LOGGER.info("Criando usuário: cpf={}, email={}",
+                DataMasking.maskCpf(request.cpf),
+                DataMasking.maskEmail(request.emailAddress)
+        );
         var user = createUserUseCase.createUser(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(user));
     }
