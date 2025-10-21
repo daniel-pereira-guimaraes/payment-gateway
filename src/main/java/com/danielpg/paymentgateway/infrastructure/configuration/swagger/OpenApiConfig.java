@@ -27,35 +27,44 @@ import org.springframework.context.annotation.Configuration;
                 title = "Payment Gateway API",
                 version = "1.0.0",
                 description = """
-                    API responsável pelo processamento de cobranças e pagamentos,
-                    desenvolvida com propósito didático e para demonstração de
-                    meus conhecimentos como desenvolvedor backend, usando Java,
-                    Spring Boot, JDBC, JUnit, Mockito e Swagger, aplicando boas
-                    práticas de TDD, DDD, Clean Code e Clean Architecture.
-                    """,
+                        <p><strong>Descrição:</strong> API responsável pelo processamento de cobranças
+                            e pagamentos, desenvolvida com propósito didático e para demonstrar habilidades em 
+                            desenvolvimento backend.
+                        </p>
+
+                        <p><strong>Tecnologias utilizadas:</strong>
+                           Java, Spring Boot, JDBC, JUnit, Mockito e Swagger.
+                        </p>
+
+                        <p><strong>Boas práticas aplicadas:</strong>
+                            TDD, DDD, Clean Code, Clean Architecture e documentação.
+                        </p>
+                        """,
                 contact = @Contact(
                         name = "Daniel Pereira Guimarães",
-                        url = "https://www.linkedin.com/in/danielpereiraguimaraes"
+                        url = "https://www.linkedin.com/in/daniel-pereira-guimaraes/"
                 )
         )
+
+
 )
 public class OpenApiConfig {
 
-        @Bean
-        public OpenAPI customOpenAPI() {
-                return new OpenAPI()
-                        .components(new Components()
-                                .addResponses("AppErrorResponse",
-                                        new ApiResponse()
-                                                .description("Erro genérico")
-                                                .content(new Content()
-                                                        .addMediaType("application/json", new MediaType()
-                                                                .schema(new Schema<>()
-                                                                        .$ref("#/components/schemas/AppErrorResponse")
-                                                                )
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .components(new Components()
+                        .addResponses("AppErrorResponse",
+                                new ApiResponse()
+                                        .description("Erro genérico")
+                                        .content(new Content()
+                                                .addMediaType("application/json", new MediaType()
+                                                        .schema(new Schema<>()
+                                                                .$ref("#/components/schemas/AppErrorResponse")
                                                         )
                                                 )
-                                )
-                        );
-        }
+                                        )
+                        )
+                );
+    }
 }
