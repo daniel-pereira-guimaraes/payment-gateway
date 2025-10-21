@@ -55,6 +55,6 @@ public class CreateChargeService {
             Cpf issuerCpf,
             Cpf payercpf,
             PositiveMoney amount,
-            String description) {
+            ChargeDescription description) {
     }
 }

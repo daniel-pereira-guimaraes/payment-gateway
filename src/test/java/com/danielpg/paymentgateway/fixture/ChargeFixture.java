@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.fixture;
 
+import com.danielpg.paymentgateway.domain.charge.ChargeDescription;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.Charge;
@@ -19,7 +20,7 @@ public class ChargeFixture {
     public static final UserId ISSUER_ID = UserId.of(1L);
     public static final UserId PAYER_ID = UserId.of(2L);
     public static final PositiveMoney AMOUNT = PositiveMoney.of(BigDecimal.TEN);
-    public static final String DESCRIPTION = "Charge description";
+    public static final ChargeDescription DESCRIPTION = ChargeDescription.of("Compra de material");
     public static final TimeMillis CREATED_AT = TimeMillis.of(1L);
     public static final TimeMillis DUE_AT = TimeMillis.of(2L);
     public static final Cpf ISSUER_CPF = CPF1;

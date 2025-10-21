@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static com.danielpg.paymentgateway.domain.charge.ChargeStatus.PENDING;
 import static com.danielpg.paymentgateway.domain.user.UserNotFoundException.USER_WITH_CPF_NOT_FOUND;
+import static com.danielpg.paymentgateway.fixture.ChargeFixture.DESCRIPTION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -31,7 +32,6 @@ class CreateChargeServiceTest {
     private static final User ISSUER = UserFixture.builder().withCpf(ISSUER_CPF).build();
     private static final User PAYER = UserFixture.builder().withCpf(PAYER_CPF).build();
     private static final PositiveMoney AMOUNT = PositiveMoney.of(BigDecimal.TEN);
-    private static final String DESCRIPTION = "Test charge";
     private static final TimeMillis NOW = TimeMillis.of(1_000_000L);
     private static final CreateChargeService.Request REQUEST =
             new CreateChargeService.Request(ISSUER_CPF, PAYER_CPF, AMOUNT, DESCRIPTION);

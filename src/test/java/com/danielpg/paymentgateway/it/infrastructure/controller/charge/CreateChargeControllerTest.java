@@ -62,7 +62,7 @@ public class CreateChargeControllerTest extends ControllerTestBase {
         assertThat(charge.issuerId().value(), is(CURRENT_USER.id().value()));
         assertThat(charge.payerId().value(), is(PAYER_ID_EXPECTED));
         assertThat(charge.amount().value(), comparesEqualTo(new BigDecimal(AMOUNT)));
-        assertThat(charge.description(), is(DESCRIPTION));
+        assertThat(charge.description().value(), is(DESCRIPTION));
         assertThat(charge.status(), is(ChargeStatus.PENDING));
     }
 

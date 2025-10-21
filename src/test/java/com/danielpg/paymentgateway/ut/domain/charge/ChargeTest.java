@@ -4,13 +4,10 @@ import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.fixture.ChargeFixture;
-import io.micrometer.common.util.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.danielpg.paymentgateway.fixture.ChargeFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,22 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ChargeTest {
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = { " ", "Valid description" })
-    void builderCreatesChargeWithAllFields(String description) {
-        var expectedDescription = StringUtils.isBlank(description) ? null : description.trim();
-
-        var charge = builder()
-                .withDescription(description)
-                .build();
+    @Test
+    void builderCreatesChargeWithAllFields() {
+        var charge = builder().build();
 
         assertThat(charge, notNullValue());
         assertThat(charge.id(), is(ChargeFixture.CHARGE_ID));
         assertThat(charge.issuerId(), is(ChargeFixture.ISSUER_ID));
         assertThat(charge.payerId(), is(ChargeFixture.PAYER_ID));
         assertThat(charge.amount(), is(ChargeFixture.AMOUNT));
-        assertThat(charge.description(), is(expectedDescription));
+        assertThat(charge.description(), is(DESCRIPTION));
         assertThat(charge.createdAt(), is(CREATED_AT));
         assertThat(charge.dueAt(), is(DUE_AT));
         assertThat(charge.status(), is(ChargeStatus.PENDING));
@@ -94,14 +85,6 @@ class ChargeTest {
         var exception = assertThrows(IllegalArgumentException.class, builder::build);
 
         assertThat(exception.getMessage(), is("O valor é requerido."));
-    }
-
-    @Test
-    void descriptionIsTrimmed() {
-        var builder = builder().withDescription("   some description   ");
-        var charge = builder.build();
-
-        assertThat(charge.description(), is("some description"));
     }
 
     @Test

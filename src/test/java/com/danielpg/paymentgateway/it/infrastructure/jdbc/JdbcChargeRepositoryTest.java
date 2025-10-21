@@ -63,15 +63,16 @@ class JdbcChargeRepositoryTest extends IntegrationTestBase {
         var charge = builder().withId(null).build();
         repository.save(charge);
 
+        var updatedDescription = ChargeDescription.of("Updated description");
         var updated = builder()
                 .withId(charge.id())
-                .withDescription("Updated description")
+                .withDescription(updatedDescription)
                 .build();
 
         repository.save(updated);
 
         var reloaded = repository.get(charge.id()).orElseThrow();
-        assertThat(reloaded.description(), is("Updated description"));
+        assertThat(reloaded.description(), is(updatedDescription));
     }
 
     @Test

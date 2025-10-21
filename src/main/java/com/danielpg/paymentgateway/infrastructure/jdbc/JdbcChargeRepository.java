@@ -69,7 +69,7 @@ public class JdbcChargeRepository implements ChargeRepository {
                 .addValue("issuerId", charge.issuerId().value())
                 .addValue("payerId", charge.payerId().value())
                 .addValue("amount", charge.amount().value())
-                .addValue("description", charge.description())
+                .addValue("description", charge.description() == null ? null : charge.description().value())
                 .addValue("createdAt", charge.createdAt().value())
                 .addValue("dueAt", charge.dueAt().value())
                 .addValue("status", charge.status().name());
@@ -81,7 +81,7 @@ public class JdbcChargeRepository implements ChargeRepository {
                 .withIssuerId(UserId.of(rs.getLong("issuer_id")))
                 .withPayerId(UserId.of(rs.getLong("payer_id")))
                 .withAmount(PositiveMoney.of(rs.getBigDecimal("amount")))
-                .withDescription(rs.getString("description"))
+                .withDescription(ChargeDescription.ofNullable(rs.getString("description")).orElse(null))
                 .withCreatedAt(TimeMillis.of(rs.getLong("created_at")))
                 .withDueAt(TimeMillis.of(rs.getLong("due_at")))
                 .withStatus(ChargeStatus.valueOf(rs.getString("status")))

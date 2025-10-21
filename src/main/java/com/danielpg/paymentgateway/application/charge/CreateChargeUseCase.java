@@ -3,6 +3,7 @@ package com.danielpg.paymentgateway.application.charge;
 import com.danielpg.paymentgateway.application.shared.AppTransaction;
 import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.domain.charge.Charge;
+import com.danielpg.paymentgateway.domain.charge.ChargeDescription;
 import com.danielpg.paymentgateway.domain.charge.CreateChargeService;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
@@ -46,6 +47,6 @@ public class CreateChargeUseCase {
     public record Request(
             Cpf payerCpf,
             PositiveMoney amount,
-            String description) {
+            ChargeDescription description) {
     }
 }

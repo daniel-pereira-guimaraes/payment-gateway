@@ -4,7 +4,6 @@ import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.shared.TimeMillis;
 import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
-import io.micrometer.common.util.StringUtils;
 
 import java.util.Objects;
 
@@ -14,7 +13,7 @@ public class Charge {
     private final UserId issuerId;
     private final UserId payerId;
     private final PositiveMoney amount;
-    private final String description;
+    private final ChargeDescription description;
     private final TimeMillis createdAt;
     private final TimeMillis dueAt;
     private ChargeStatus status;
@@ -24,7 +23,7 @@ public class Charge {
         this.issuerId = Validation.required(builder.issuerId, "O emitente é requerido.");
         this.payerId = Validation.required(builder.payerId, "O pagador é requerido.");
         this.amount = Validation.required(builder.amount, "O valor é requerido.");
-        this.description = StringUtils.isBlank(builder.description) ? null : builder.description.trim();
+        this.description = builder.description;
         this.createdAt = Validation.required(builder.createdAt, "A data/hora de criação é requerida.");
         this.dueAt = validateDueAt(builder);
         this.status = Validation.required(builder.status, "O status da cobrança é requerido.");
@@ -54,7 +53,7 @@ public class Charge {
         return amount;
     }
 
-    public String description() {
+    public ChargeDescription description() {
         return description;
     }
 
@@ -132,7 +131,7 @@ public class Charge {
         private UserId issuerId;
         private UserId payerId;
         private PositiveMoney amount;
-        private String description;
+        private ChargeDescription description;
         private TimeMillis createdAt;
         private TimeMillis dueAt;
         private ChargeStatus status;
@@ -160,7 +159,7 @@ public class Charge {
             return this;
         }
 
-        public Builder withDescription(String description) {
+        public Builder withDescription(ChargeDescription description) {
             this.description = description;
             return this;
         }

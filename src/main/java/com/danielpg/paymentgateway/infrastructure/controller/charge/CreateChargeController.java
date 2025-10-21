@@ -2,6 +2,7 @@ package com.danielpg.paymentgateway.infrastructure.controller.charge;
 
 import com.danielpg.paymentgateway.application.charge.CreateChargeUseCase;
 import com.danielpg.paymentgateway.domain.charge.Charge;
+import com.danielpg.paymentgateway.domain.charge.ChargeDescription;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
@@ -91,7 +92,7 @@ public class CreateChargeController {
             return new CreateChargeUseCase.Request(
                     Cpf.of(payerCpf),
                     PositiveMoney.of(amount),
-                    description
+                    ChargeDescription.ofNullable(description).orElse(null)
             );
         }
     }
@@ -120,7 +121,7 @@ public class CreateChargeController {
                     charge.issuerId().value(),
                     charge.payerId().value(),
                     charge.amount().value(),
-                    charge.description(),
+                    charge.description() == null ? null : charge.description().value(),
                     charge.createdAt().value(),
                     charge.dueAt().value(),
                     charge.status()
