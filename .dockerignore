@@ -1,0 +1,8 @@
+.git
+.gitattributes
+.gitignore
+.idea/
+target/
+Dockerfile
+README.md
+mvnw.cmd
