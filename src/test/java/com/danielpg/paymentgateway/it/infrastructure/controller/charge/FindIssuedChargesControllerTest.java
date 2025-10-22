@@ -44,10 +44,10 @@ class FindIssuedChargesControllerTest extends ControllerTestBase {
     }
 
     @Test
-    void returnsForbiddenWhenUserIsUnauthenticated() throws Exception {
+    void returnsUnauthorizedWhenUserIsUnauthenticated() throws Exception {
         mockMvc.perform(get(ENDPOINT)
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

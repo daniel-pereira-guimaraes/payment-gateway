@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<AppErrorResponse> handlePublicException(
             IllegalStateException ex, WebRequest request) {
-        LOGGER.error(logMessage(ex));
+        logError(ex);
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new AppErrorResponse(ex));
     }
@@ -27,21 +27,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<AppErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex, WebRequest request) {
-        LOGGER.error(logMessage(ex));
+        logError(ex);
         return ResponseEntity.badRequest().body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<AppErrorResponse> handleInvalidCredentialsException(
-            InvalidCredentialsException e, WebRequest request) {
-        LOGGER.error(logMessage(e));
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AppErrorResponse(e));
+            InvalidCredentialsException ex, WebRequest request) {
+        logError(ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(AccessForbiddenException.class)
     public ResponseEntity<AppErrorResponse> handleAccessForbiddenException(
             AccessForbiddenException ex, WebRequest request) {
-        LOGGER.error(logMessage(ex));
+        logError(ex);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AppErrorResponse(ex));
     }
 
@@ -49,16 +49,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AbstractNotFoundException.class)
     public ResponseEntity<AppErrorResponse> handleAbstractNotFoundException(
             AbstractNotFoundException ex, WebRequest request) {
-        LOGGER.error(logMessage(ex));
+        logError(ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AppErrorResponse(ex));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<AppErrorResponse> handleException(Exception ex, WebRequest request) {
-        LOGGER.error(logMessage(ex));
+        logError(ex);
         return ResponseEntity.internalServerError().body(new AppErrorResponse("Erro inesperado no servidor."));
     }
 
+    private void logError(Exception e) {
+        LOGGER.error(logMessage(e), e);
+    }
 
     private String logMessage(Exception e) {
         var message = e.getMessage();

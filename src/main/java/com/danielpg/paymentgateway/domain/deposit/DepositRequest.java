@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.domain.deposit;
 
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.user.UserId;
 
 import java.util.Objects;
@@ -11,8 +12,8 @@ public class DepositRequest {
     private final PositiveMoney amount;
 
     private DepositRequest(UserId userId, PositiveMoney amount) {
-        this.userId = Objects.requireNonNull(userId, "O usuário é requerido.");
-        this.amount = Objects.requireNonNull(amount, "O valor é requerido.");
+        this.userId = Validation.required(userId, "O usuário é requerido.");
+        this.amount = Validation.required(amount, "O valor é requerido.");
     }
 
     public static DepositRequest of(UserId userId, PositiveMoney amount) {

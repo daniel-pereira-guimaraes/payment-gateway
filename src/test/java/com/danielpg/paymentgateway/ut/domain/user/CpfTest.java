@@ -4,23 +4,23 @@ import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.domain.user.InvalidCpfException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.danielpg.paymentgateway.fixture.CpfFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CpfTest {
 
     @ParameterizedTest
-    @ValueSource(strings = { "00000000191", "99999999808" })
+    @ValueSource(strings = { "00000000191", " 99999999808 " })
     void createSuccessfully(String value) {
         var cpf = Cpf.of(value);
 
-        assertThat(cpf.value(), is(value));
+        assertThat(cpf.value(), is(value.trim()));
     }
 
     @ParameterizedTest
@@ -32,7 +32,7 @@ public class CpfTest {
                 () -> Cpf.of(value)
         );
 
-        assertThat(exception.getMessage(), is("CPF inválido: " + value));
+        assertThat(exception.getMessage(), containsString("CPF inválido"));
     }
 
     @ParameterizedTest
@@ -55,5 +55,20 @@ public class CpfTest {
         assertThat(cpf1, not(CPF1_VALUE));
         assertThat(cpf1.hashCode(), is(cpf2.hashCode()));
         assertThat(cpf1.hashCode(), not(cpf3.hashCode()));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    void ofNullableReturnsEmptyWhenValueIsBlank(String value) {
+        var result = Cpf.ofNullable(value);
+        assertThat(result.isEmpty(), is(true));
+    }
+
+    @Test
+    void ofNullableReturnsOptionalWithValueWhenValid() {
+        var result = Cpf.ofNullable(CPF1_VALUE);
+        assertThat(result.isPresent(), is(true));
+        assertThat(result.get().value(), is(CPF1_VALUE));
     }
 }

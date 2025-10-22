@@ -1,5 +1,8 @@
 package com.danielpg.paymentgateway.domain.shared;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -43,6 +46,11 @@ public abstract class AbstractMoney implements Comparable<AbstractMoney> {
     @Override
     public int compareTo(AbstractMoney other) {
         return value.compareTo(other.value);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

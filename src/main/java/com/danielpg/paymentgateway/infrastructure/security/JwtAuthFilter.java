@@ -37,17 +37,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 processAuthentication(request);
             }
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-           writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
         } catch (JwtException e) {
-            writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            writeUnauthorizedResponse(response, e);
         }
     }
 
-    private void writeErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
-        response.setStatus(status);
+    private void writeUnauthorizedResponse(HttpServletResponse response, Throwable e) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write("{\"message\": \"" + message + "\"}");
+        response.getWriter().write("""
+                {"message": "%s"}
+                """.formatted(e.getMessage()));
+
     }
 
     private boolean isUnauthenticated() {
@@ -55,12 +56,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private void processAuthentication(HttpServletRequest request) {
-        extractToken(request).ifPresent(rawToken -> {
-            var token = tokenService.decode(rawToken);
-            if (!token.isExpired()) {
-                authenticateUser(token, request);
-            }
-        });
+        var tokenOpt = extractToken(request);
+
+        if (tokenOpt.isEmpty()) {
+            throw new JwtException("Token nao fornecido.;");
+        }
+
+        var token = tokenService.decode(tokenOpt.get());
+
+        if (token.isExpired()) {
+            throw new ExpiredJwtException(null, null, "Token expirado.");
+        }
+
+        authenticateUser(token, request);
     }
 
     private Optional<String> extractToken(HttpServletRequest request) {

@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.infrastructure.controller.deposit;
 
 import com.danielpg.paymentgateway.application.deposit.CreateDepositUseCase;
+import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.domain.deposit.Deposit;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +28,16 @@ import java.math.BigDecimal;
 @RequestMapping("/deposits")
 public class CreateDepositController {
 
-    @Autowired
-    private CreateDepositUseCase useCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateDepositController.class);
+
+    private final CreateDepositUseCase useCase;
+    private final RequesterProvider requesterProvider;
+
+    public CreateDepositController(CreateDepositUseCase useCase,
+                                   RequesterProvider requesterProvider) {
+        this.useCase = useCase;
+        this.requesterProvider = requesterProvider;
+    }
 
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -57,7 +68,8 @@ public class CreateDepositController {
     @UnauthorizedResponse
     @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
-        var deposit = useCase.createDeposit(PositiveMoney.of(request.amount));
+        LOGGER.info("Depositando: userId={}, amount={}", requesterProvider.requesterId(), request.amount);
+        var deposit = useCase.createDeposit(PositiveMoney.ofNullable(request.amount).orElse(null));
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(deposit));
     }
 

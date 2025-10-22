@@ -32,10 +32,11 @@ public class Cpf {
     }
 
     private String validate(String value) {
-        if (!isCpf(value)) {
-            throw new InvalidCpfException(value);
+        var trimmed = Objects.requireNonNull(value).trim();
+        if (!isCpf(trimmed)) {
+            throw new InvalidCpfException(trimmed);
         }
-        return value;
+        return trimmed;
     }
 
     private static boolean isCpf(String value) {

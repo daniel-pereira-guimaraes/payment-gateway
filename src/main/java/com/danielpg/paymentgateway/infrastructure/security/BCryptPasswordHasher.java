@@ -1,5 +1,6 @@
 package com.danielpg.paymentgateway.infrastructure.security;
 
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.user.HashedPassword;
 import com.danielpg.paymentgateway.domain.user.PasswordHasher;
 import com.danielpg.paymentgateway.domain.user.PlainTextPassword;
@@ -14,6 +15,7 @@ public class BCryptPasswordHasher implements PasswordHasher {
 
     @Override
     public HashedPassword hashedPassword(PlainTextPassword plainTextPassword) {
+        Validation.required(plainTextPassword, "A senha é requerida.");
         return HashedPassword.of(encoder.encode(plainTextPassword.value()));
     }
 

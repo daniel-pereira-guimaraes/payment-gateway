@@ -3,7 +3,6 @@ package com.danielpg.paymentgateway.domain.user;
 import io.micrometer.common.util.StringUtils;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import liquibase.util.StringUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -15,8 +14,7 @@ public class EmailAddress {
     private final String value;
 
     private EmailAddress(String value) {
-        validate(value);
-        this.value = value;
+        this.value = validate(value);
     }
 
     public static EmailAddress of(String address) {
@@ -29,15 +27,17 @@ public class EmailAddress {
                 : Optional.of(new EmailAddress(address));
     }
 
-    private void validate(String address) {
+    private String validate(String address) {
+        var trimmed = Objects.requireNonNull(address).trim();
         InternetAddress internetAddress;
         try {
-            internetAddress = new InternetAddress(address);
+            internetAddress = new InternetAddress(trimmed);
             internetAddress.validate();
         } catch (AddressException e) {
-            throw new InvalidEmailAddressException(address, e);
+            throw new InvalidEmailAddressException(trimmed, e);
         }
-        ensureNoPersonalInfo(address, internetAddress);
+        ensureNoPersonalInfo(trimmed, internetAddress);
+        return trimmed;
     }
 
     private static void ensureNoPersonalInfo(

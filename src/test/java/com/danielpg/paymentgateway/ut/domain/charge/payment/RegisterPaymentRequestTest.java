@@ -46,7 +46,7 @@ class RegisterPaymentRequestTest {
                 .withCharge(null)
                 .withMethod(PaymentMethod.BALANCE);
 
-        var exception = assertThrows(NullPointerException.class, builder::build);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
         assertThat(exception.getMessage(), is("A cobrança é requerida."));
     }
 
@@ -57,7 +57,7 @@ class RegisterPaymentRequestTest {
                 .withCharge(charge)
                 .withMethod(null);
 
-        var exception = assertThrows(NullPointerException.class, builder::build);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
         assertThat(exception.getMessage(), is("O método de pagamento é requerido."));
     }
 
@@ -69,7 +69,7 @@ class RegisterPaymentRequestTest {
                 .withMethod(PaymentMethod.CREDIT_CARD)
                 .withCreditCard(null);
 
-        var exception = assertThrows(NullPointerException.class, builder::build);
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
         assertThat(exception.getMessage(), is("O cartão de crédito é requerido para pagamentos com cartão."));
     }
 

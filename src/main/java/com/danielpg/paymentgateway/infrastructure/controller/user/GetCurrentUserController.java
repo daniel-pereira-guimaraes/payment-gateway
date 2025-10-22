@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,8 +67,8 @@ public class GetCurrentUserController {
             String name,
             @Schema(description = "CPF do usuário", example = "00000000191")
             String cpf,
-            @Schema(description = "Endereço de email do usuário", example = "joao@mail.com")
-            String email,
+            @Schema(description = "Endereço de emailAddress do usuário", example = "joao@mail.com")
+            String emailAddress,
             @Schema(description = "Saldo disponível do usuário", example = "12.01")
             BigDecimal balance) {
 

@@ -105,12 +105,12 @@ public class RegisterPaymentControllerTest extends ControllerTestBase {
     }
 
     @Test
-    void returnsForbiddenWhenUserIsUnauthenticated() throws Exception {
+    void returnsUnauthorizedWhenUserIsUnauthenticated() throws Exception {
         var requestBody = REQUEST_WITH_BALANCE.formatted(CHARGE_ID_SUCCESS);
 
         mockMvc.perform(post(ENDPOINT)
                         .content(requestBody).contentType(APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

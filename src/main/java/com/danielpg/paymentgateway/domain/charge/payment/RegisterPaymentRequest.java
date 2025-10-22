@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.domain.charge.payment;
 
 import com.danielpg.paymentgateway.domain.charge.Charge;
+import com.danielpg.paymentgateway.domain.shared.Validation;
 import com.danielpg.paymentgateway.domain.shared.creditcard.CreditCard;
 
 import java.util.Objects;
@@ -12,11 +13,12 @@ public class RegisterPaymentRequest {
     private final CreditCard creditCard;
 
     private RegisterPaymentRequest(Builder builder) {
-        this.charge = Objects.requireNonNull(builder.charge, "A cobrança é requerida.");
-        this.method = Objects.requireNonNull(builder.method, "O método de pagamento é requerido.");
-
+        this.charge = Validation.required(builder.charge, "A cobrança é requerida.");
+        this.method = Validation.required(builder.method, "O método de pagamento é requerido.");
         if (this.method == PaymentMethod.CREDIT_CARD) {
-            this.creditCard = Objects.requireNonNull(builder.creditCard, "O cartão de crédito é requerido para pagamentos com cartão.");
+            this.creditCard = Validation.required(builder.creditCard,
+                    "O cartão de crédito é requerido para pagamentos com cartão."
+            );
         } else {
             this.creditCard = null;
         }

@@ -28,7 +28,7 @@ class DepositRequestTest {
     void throwsExceptionWhenUserIdIsNull() {
         var amount = PositiveMoney.of(BigDecimal.TEN);
 
-        var ex = assertThrows(NullPointerException.class, () ->
+        var ex = assertThrows(IllegalArgumentException.class, () ->
                 DepositRequest.of(null, amount)
         );
 
@@ -39,7 +39,7 @@ class DepositRequestTest {
     void throwsExceptionWhenAmountIsNull() {
         var userId = UserId.of(1L);
 
-        var ex = assertThrows(NullPointerException.class, () ->
+        var ex = assertThrows(IllegalArgumentException.class, () ->
                 DepositRequest.of(userId, null)
         );
 

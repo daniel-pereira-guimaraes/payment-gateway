@@ -44,11 +44,11 @@ public class ChargeDescriptionTest {
 
     @Test
     void throwExceptionWhenValueTooLong() {
-        var longValue = "A".repeat(71);
+        var longValue = "A".repeat(101);
 
         var exception = assertThrows(IllegalArgumentException.class, () -> ChargeDescription.of(longValue));
 
-        assertThat(exception.getMessage(), is("A descrição deve ter no máximo 70 caracteres."));
+        assertThat(exception.getMessage(), is("A descrição deve ter no máximo 100 caracteres."));
     }
 
     @ParameterizedTest

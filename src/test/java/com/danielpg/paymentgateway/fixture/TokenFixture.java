@@ -12,9 +12,9 @@ public class TokenFixture {
 
     public static Token.Builder builder() {
         return Token.builder()
-                .user(UserFixture.builder().build())
-                .rawToken(RAW_TOKEN)
-                .expiration(0L)
-                .clock(TimeMillis::now);
+                .withUser(UserFixture.builder().build())
+                .withRawToken(RAW_TOKEN)
+                .withExpiration(0L)
+                .withClock(TimeMillis::now);
     }
 }

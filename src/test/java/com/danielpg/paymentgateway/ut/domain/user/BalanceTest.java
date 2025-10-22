@@ -120,4 +120,21 @@ class BalanceTest {
         assertThat(balance1.compareTo(balance3), is(0));
     }
 
+    @Test
+    void ofNullableReturnsOptionalWithValueWhenValid() {
+        var value = new BigDecimal("123.45");
+
+        var result = Balance.ofNullable(value);
+
+        assertThat(result.isPresent(), is(true));
+        assertThat(result.get().value(), is(value));
+    }
+
+    @Test
+    void ofNullableReturnsEmptyWhenValueIsNull() {
+        var result = Balance.ofNullable(null);
+
+        assertThat(result.isEmpty(), is(true));
+    }
+
 }

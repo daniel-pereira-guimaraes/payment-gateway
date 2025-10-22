@@ -107,7 +107,6 @@ class JdbcReceivedChargesQueryTest extends IntegrationTestBase {
 
         var result = repository.execute(filter);
 
-        System.out.println(result);
         assertThat(result, is(EXPECTED_ALL_CHARGES));
     }
 
@@ -126,7 +125,6 @@ class JdbcReceivedChargesQueryTest extends IntegrationTestBase {
 
         var result = repository.execute(filter);
 
-        System.out.println(result);
         assertThat(result, is(EXPECTED_PAID_CHARGES));
     }
 
@@ -136,7 +134,6 @@ class JdbcReceivedChargesQueryTest extends IntegrationTestBase {
 
         var result = repository.execute(filter);
 
-        System.out.println(result);
         assertThat(result, is(EXPECTED_CANCELED_CHARGES));
     }
 }

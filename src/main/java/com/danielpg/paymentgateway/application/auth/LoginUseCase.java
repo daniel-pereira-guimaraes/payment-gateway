@@ -40,7 +40,6 @@ public class LoginUseCase {
     }
 
     private Token tryLoginByCpf(Request request) {
-        LOGGER.info("Fazendo login: cpf={}", DataMasking.maskCpf(request.cpf.value()));
         try {
             var user = userRepository.getOrThrow(request.cpf);
             return tryAuthenticate(user, request.plainTextPassword);
@@ -54,12 +53,11 @@ public class LoginUseCase {
     }
 
     private Token tryLoginByEmail(Request request) {
-        LOGGER.info("Fazendo login: email={}", DataMasking.maskEmail(request.emailAddress.value()));
         try {
             var user = userRepository.getOrThrow(request.emailAddress);
             return tryAuthenticate(user, request.plainTextPassword);
         } catch (RuntimeException e) {
-            LOGGER.info("Erro ao fazer login: email={}, message={}",
+            LOGGER.info("Erro ao fazer login: emailAddress={}, message={}",
                     DataMasking.maskEmail(request.emailAddress.value()),
                     e.getMessage()
             );

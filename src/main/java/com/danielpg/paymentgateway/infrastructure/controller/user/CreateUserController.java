@@ -24,8 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class CreateUserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateUserController.class);
 
-    @Autowired
-    private CreateUserUseCase createUserUseCase;
+    private final CreateUserUseCase createUserUseCase;
+
+    public CreateUserController(CreateUserUseCase createUserUseCase) {
+        this.createUserUseCase = createUserUseCase;
+    }
 
     @PostMapping
     @Operation(
@@ -39,6 +42,7 @@ public class CreateUserController {
                             schema = @Schema(implementation = Request.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "João Silva",
                                             value = """
                                                 {
                                                   "name": "Joao Silva",
@@ -49,6 +53,7 @@ public class CreateUserController {
                                                 """
                                     ),
                                     @ExampleObject(
+                                            name = "Maria Souza",
                                             value = """
                                                 {
                                                   "name": "Maria Souza",
@@ -82,7 +87,7 @@ public class CreateUserController {
     )
     @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
-        LOGGER.info("Criando usuário: cpf={}, email={}",
+        LOGGER.info("Criando usuário: cpf={}, emailAddress={}",
                 DataMasking.maskCpf(request.cpf),
                 DataMasking.maskEmail(request.emailAddress)
         );
@@ -104,10 +109,10 @@ public class CreateUserController {
     ) {
         public CreateUserUseCase.Request toUseCaseRequest() {
             return new CreateUserUseCase.Request(
-                    PersonName.of(name),
-                    Cpf.of(cpf),
-                    EmailAddress.of(emailAddress),
-                    PlainTextPassword.of(password)
+                    PersonName.ofNullable(name).orElse(null),
+                    Cpf.ofNullable(cpf).orElse(null),
+                    EmailAddress.ofNullable(emailAddress).orElse(null),
+                    PlainTextPassword.ofNullable(password).orElse(null)
             );
         }
     }

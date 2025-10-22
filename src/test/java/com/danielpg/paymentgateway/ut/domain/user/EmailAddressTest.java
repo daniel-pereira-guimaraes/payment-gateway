@@ -17,12 +17,17 @@ public class EmailAddressTest {
             "name@server",
             "name@server.com",
             "name@server.com.br",
-            "name.etc@server.com"
+            " name.etc@server.com "
     })
     void createSuccessfully(String address) {
         var email = EmailAddress.of(address);
 
-        assertThat(email.value(), is(address));
+        assertThat(email.value(), is(address.trim()));
+    }
+
+    @Test
+    void throwsExceptionWhenAddressIsNull() {
+        assertThrows(NullPointerException.class, () -> EmailAddress.of(null));
     }
 
     @ParameterizedTest

@@ -134,6 +134,15 @@ class ChargeTest {
     }
 
     @Test
+    void throwsExceptionWhenIssuerEqualsPayer() {
+        var builder = ChargeFixture.builder().withIssuerId(ISSUER_ID).withPayerId(ISSUER_ID);
+
+        var exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        assertThat(exception.getMessage(), is("O devedor não pode ser igual ao emitente."));
+    }
+
+    @Test
     void changesStatusToPaidSuccessfullyWhenPending() {
         var charge = ChargeFixture.builder()
                 .withStatus(ChargeStatus.PENDING)

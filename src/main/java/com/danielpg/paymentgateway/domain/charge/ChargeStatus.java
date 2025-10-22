@@ -21,7 +21,7 @@ public enum ChargeStatus {
                     try {
                         return ChargeStatus.valueOf(s);
                     } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("Status inválido: " + s);
+                        throw new IllegalArgumentException("Status inválido: " + s, e);
                     }
                 })
                 .collect(Collectors.toSet());

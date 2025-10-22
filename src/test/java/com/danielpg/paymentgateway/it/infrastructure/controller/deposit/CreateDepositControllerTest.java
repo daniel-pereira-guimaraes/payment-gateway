@@ -82,13 +82,13 @@ class CreateDepositControllerTest extends ControllerTestBase {
 
 
     @Test
-    void returnsForbiddenWhenUnauthenticated() throws Exception {
+    void returnsUnauthorizedWhenUnauthenticated() throws Exception {
         var initialBalance = userBalance(CURRENT_USER.id());
 
         mockMvc.perform(post(ENDPOINT)
                         .content("{\"amount\": " + VALID_AMOUNT + "}")
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
 
         assertThat(userBalance(CURRENT_USER.id()), comparesEqualTo(initialBalance));
     }

@@ -1,6 +1,7 @@
 package com.danielpg.paymentgateway.infrastructure.controller.charge.payment;
 
 import com.danielpg.paymentgateway.application.charge.payment.RegisterPaymentUseCase;
+import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.domain.charge.ChargeId;
 import com.danielpg.paymentgateway.domain.charge.payment.Payment;
 import com.danielpg.paymentgateway.domain.charge.payment.PaymentMethod;
@@ -19,6 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +32,15 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "05 - Pagamentos")
 public class RegisterPaymentController {
 
-    @Autowired
-    private RegisterPaymentUseCase useCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterPaymentController.class);
+
+    private final RegisterPaymentUseCase useCase;
+    private final RequesterProvider requesterProvider;
+
+    public RegisterPaymentController(RegisterPaymentUseCase useCase, RequesterProvider requesterProvider) {
+        this.useCase = useCase;
+        this.requesterProvider = requesterProvider;
+    }
 
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -101,6 +111,7 @@ public class RegisterPaymentController {
     @BadRequestResponse
     @ForbiddenResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
+        LOGGER.info("Registrando pagamento: chargeId={}, method={}", request.chargeId, request.method);
         var payment = useCase.registerPayment(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(payment));
     }
@@ -116,7 +127,7 @@ public class RegisterPaymentController {
 
         public RegisterPaymentUseCase.Request toUseCaseRequest() {
             return new RegisterPaymentUseCase.Request(
-                    ChargeId.of(chargeId),
+                    ChargeId.ofNullable(chargeId).orElse(null),
                     method,
                     creditCard != null ? creditCard.toDomain() : null
             );
@@ -133,9 +144,9 @@ public class RegisterPaymentController {
 
         CreditCard toDomain() {
             return CreditCard.builder()
-                    .withNumber(CreditCardNumber.of(number))
-                    .withExpirationDate(CreditCardExpirationDate.of(expirationDate))
-                    .withCvv(CreditCardCvv.of(cvv))
+                    .withNumber(CreditCardNumber.ofNullable(number).orElse(null))
+                    .withExpirationDate(CreditCardExpirationDate.ofNullable(expirationDate).orElse(null))
+                    .withCvv(CreditCardCvv.ofNullable(cvv).orElse(null))
                     .build();
         }
     }

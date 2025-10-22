@@ -55,10 +55,10 @@ public class JwtTokenService implements AppTokenService {
 
     private Token buildToken(User user, String rawToken, long expiration) {
         return Token.builder()
-                .rawToken(rawToken)
-                .user(user)
-                .expiration(expiration)
-                .clock(clock)
+                .withRawToken(rawToken)
+                .withUser(user)
+                .withExpiration(expiration)
+                .withClock(clock)
                 .build();
     }
 

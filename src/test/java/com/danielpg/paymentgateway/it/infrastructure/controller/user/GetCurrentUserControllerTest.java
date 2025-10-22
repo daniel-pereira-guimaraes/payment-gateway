@@ -30,14 +30,14 @@ public class GetCurrentUserControllerTest extends ControllerTestBase {
         assertThat(response.getLong("id"), is(CURRENT_USER.id().value()));
         assertThat(response.getString("name"), is(CURRENT_USER.name().value()));
         assertThat(response.getString("cpf"), is(CURRENT_USER.cpf().value()));
-        assertThat(response.getString("email"), is(CURRENT_USER.emailAddress().value()));
+        assertThat(response.getString("emailAddress"), is(CURRENT_USER.emailAddress().value()));
         assertThat(new BigDecimal(response.getString("balance")), comparesEqualTo(CURRENT_USER.balance().value()));
     }
 
     @Test
-    void returnsForbiddenWhenUserIsUnauthenticated() throws Exception {
+    void returnsUnauthorizedWhenUserIsUnauthenticated() throws Exception {
         mockMvc.perform(get(ENDPOINT)
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

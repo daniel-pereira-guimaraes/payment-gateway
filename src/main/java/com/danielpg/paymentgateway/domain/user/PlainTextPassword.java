@@ -1,9 +1,11 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.shared.Validation;
+import io.micrometer.common.util.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class PlainTextPassword {
@@ -28,8 +30,14 @@ public class PlainTextPassword {
         return new PlainTextPassword(value);
     }
 
+    public static Optional<PlainTextPassword> ofNullable(String value) {
+        return StringUtils.isBlank(value)
+                ? Optional.empty()
+                : Optional.of(new PlainTextPassword(value));
+    }
+
     private static String validate(String plainText) {
-        var trimmed = Validation.required(plainText, "A senha é requerida.");
+        var trimmed = Objects.requireNonNull(plainText).trim();
         if (!PATTERN.matcher(trimmed).matches()) {
             throw new InvalidPasswordException(INVALID_PASSWORD_MESSAGE.formatted(MIN_LENGTH, MAX_LENGTH));
         }

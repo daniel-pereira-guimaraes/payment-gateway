@@ -1,13 +1,15 @@
 package com.danielpg.paymentgateway.domain.charge;
 
 import io.micrometer.common.util.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public class ChargeDescription {
 
-    private static final int MAX_LENGTH = 70;
+    private static final int MAX_LENGTH = 100;
 
     private final String value;
 
@@ -50,5 +52,10 @@ public class ChargeDescription {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

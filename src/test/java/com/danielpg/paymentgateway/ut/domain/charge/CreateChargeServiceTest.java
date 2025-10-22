@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static com.danielpg.paymentgateway.domain.charge.ChargeStatus.PENDING;
 import static com.danielpg.paymentgateway.domain.user.UserNotFoundException.USER_WITH_CPF_NOT_FOUND;
-import static com.danielpg.paymentgateway.fixture.ChargeFixture.DESCRIPTION;
+import static com.danielpg.paymentgateway.fixture.ChargeFixture.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -29,8 +29,8 @@ class CreateChargeServiceTest {
 
     private static final Cpf ISSUER_CPF = CpfFixture.CPF1;
     private static final Cpf PAYER_CPF = CpfFixture.CPF2;
-    private static final User ISSUER = UserFixture.builder().withCpf(ISSUER_CPF).build();
-    private static final User PAYER = UserFixture.builder().withCpf(PAYER_CPF).build();
+    private static final User ISSUER = UserFixture.builder().withId(ISSUER_ID).withCpf(ISSUER_CPF).build();
+    private static final User PAYER = UserFixture.builder().withId(PAYER_ID).withCpf(PAYER_CPF).build();
     private static final PositiveMoney AMOUNT = PositiveMoney.of(BigDecimal.TEN);
     private static final TimeMillis NOW = TimeMillis.of(1_000_000L);
     private static final CreateChargeService.Request REQUEST =
@@ -73,7 +73,7 @@ class CreateChargeServiceTest {
 
         var exception = assertThrows(UserNotFoundException.class, () -> service.createCharge(REQUEST));
 
-        assertThat(exception.getMessage(), is(USER_WITH_CPF_NOT_FOUND.formatted(ISSUER_CPF.value())));
+        assertThat(exception.getMessage(), is("Usuário com CPF 00*******91 não encontrado."));
         verifyNoInteractions(chargeRepository);
     }
 
@@ -84,7 +84,7 @@ class CreateChargeServiceTest {
 
         var exception = assertThrows(UserNotFoundException.class, () -> service.createCharge(REQUEST));
 
-        assertThat(exception.getMessage(), is(USER_WITH_CPF_NOT_FOUND.formatted(PAYER_CPF.value())));
+        assertThat(exception.getMessage(), is("Usuário com CPF 99*******08 não encontrado."));
         verifyNoInteractions(chargeRepository);
     }
 

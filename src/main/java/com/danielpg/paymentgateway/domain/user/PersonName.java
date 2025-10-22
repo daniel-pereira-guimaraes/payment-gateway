@@ -1,6 +1,5 @@
 package com.danielpg.paymentgateway.domain.user;
 
-import com.danielpg.paymentgateway.domain.shared.Validation;
 import io.micrometer.common.util.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -30,14 +29,14 @@ public class PersonName {
     }
 
     private static String validate(String value) {
-        var trimmedValue = Validation.required(value, "O nome é requerido.");
-        if (trimmedValue.length() < MIN_LENGTH || trimmedValue.length() > MAX_LENGTH) {
+        var trimmed = Objects.requireNonNull(value).trim();
+        if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
             throw new InvalidPersonNameException(
                     "O nome deve ter de %d a %d caracteres."
                     .formatted(MIN_LENGTH, MAX_LENGTH)
             );
         }
-        return trimmedValue;
+        return trimmed;
     }
 
     public String value() {

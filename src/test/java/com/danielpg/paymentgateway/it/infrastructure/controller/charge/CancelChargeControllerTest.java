@@ -108,13 +108,13 @@ public class CancelChargeControllerTest extends ControllerTestBase {
     }
 
     @Test
-    void failsWhenUserNotAuthenticated() throws Exception {
+    void returnsUnauthorizedWhenUserNotAuthenticated() throws Exception {
         mockMvc.perform(patch(ENDPOINT_TEMPLATE.formatted(CHARGE_ID_PENDING)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void failsWhenRequesterIsNotIssuer() throws Exception {
+    void returnsForbiddenWhenRequesterIsNotIssuer() throws Exception {
         mockMvc.perform(patch(ENDPOINT_TEMPLATE.formatted(CHARGE_ID_FORBIDDEN))
                         .header("Authorization", userToken()))
                 .andExpect(status().isForbidden());

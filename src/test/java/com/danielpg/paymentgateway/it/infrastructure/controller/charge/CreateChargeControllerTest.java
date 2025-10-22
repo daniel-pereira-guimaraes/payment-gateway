@@ -67,12 +67,12 @@ public class CreateChargeControllerTest extends ControllerTestBase {
     }
 
     @Test
-    void returnsForbiddenWhenUserIsUnauthenticated() throws Exception {
+    void returnsUnauthorizedWhenUserIsUnauthenticated() throws Exception {
         var requestBody = REQUEST_BODY.formatted(VALID_PAYER_CPF, AMOUNT, DESCRIPTION);
 
         mockMvc.perform(post(ENDPOINT)
                         .content(requestBody).contentType(APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

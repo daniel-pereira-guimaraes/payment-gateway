@@ -4,6 +4,7 @@ import com.danielpg.paymentgateway.domain.user.InvalidPersonNameException;
 import com.danielpg.paymentgateway.domain.user.PersonName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -13,20 +14,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PersonNameTest {
 
+    @ParameterizedTest
+    @ValueSource(strings = {"Daniel", " Daniel "})
+    void createPersonNameWhenValid(String value) {
+        var name = PersonName.of(value);
+
+        assertThat(name.value(), is(value.trim()));
+    }
+
     @Test
-    void createPersonNameWhenValid() {
-        var name = PersonName.of("Daniel");
-        assertThat(name.value(), is("Daniel"));
+    void throwsExceptionWhenValueIsNull() {
+        assertThrows(NullPointerException.class, () ->
+                PersonName.of(null)
+        );
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = " ")
     void throwExceptionWhenNameIsBlank(String invalidName) {
         var exception = assertThrows(IllegalArgumentException.class, () ->
                 PersonName.of(invalidName)
         );
-        assertThat(exception.getMessage(), is("O nome é requerido."));
+        assertThat(exception.getMessage(), is("O nome deve ter de 2 a 70 caracteres."));
     }
 
     @ParameterizedTest

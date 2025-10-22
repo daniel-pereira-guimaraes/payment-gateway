@@ -27,6 +27,9 @@ public class Charge {
         this.createdAt = Validation.required(builder.createdAt, "A data/hora de criação é requerida.");
         this.dueAt = validateDueAt(builder);
         this.status = Validation.required(builder.status, "O status da cobrança é requerido.");
+        if (Objects.equals(issuerId, payerId)) {
+            throw new IllegalArgumentException("O devedor não pode ser igual ao emitente.");
+        }
     }
 
     private static TimeMillis validateDueAt(Builder builder) {

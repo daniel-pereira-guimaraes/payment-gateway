@@ -29,4 +29,5 @@ public class PositiveMoney extends AbstractMoney {
                 ? Optional.empty()
                 : Optional.of(new PositiveMoney(value));
     }
+
 }

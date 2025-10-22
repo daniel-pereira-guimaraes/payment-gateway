@@ -72,7 +72,7 @@ class JdbcUserRepositoryTest extends IntegrationTestBase {
                 () -> repository.getOrThrow(emailAddress)
         );
 
-        assertThat(exception.getMessage(), is("Usuário com email x@y.com não encontrado."));
+        assertThat(exception.getMessage(), is("Usuário com email *@y.com não encontrado."));
     }
 
     @Test

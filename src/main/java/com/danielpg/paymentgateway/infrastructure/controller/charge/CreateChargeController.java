@@ -1,9 +1,11 @@
 package com.danielpg.paymentgateway.infrastructure.controller.charge;
 
 import com.danielpg.paymentgateway.application.charge.CreateChargeUseCase;
+import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.domain.charge.Charge;
 import com.danielpg.paymentgateway.domain.charge.ChargeDescription;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
+import com.danielpg.paymentgateway.domain.shared.DataMasking;
 import com.danielpg.paymentgateway.domain.shared.PositiveMoney;
 import com.danielpg.paymentgateway.domain.user.Cpf;
 import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
@@ -15,6 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +31,15 @@ import java.math.BigDecimal;
 @RequestMapping("/charges")
 public class CreateChargeController {
 
-    @Autowired
-    private CreateChargeUseCase useCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateChargeController.class);
+
+    private final CreateChargeUseCase useCase;
+    private final RequesterProvider requesterProvider;
+
+    public CreateChargeController(CreateChargeUseCase useCase, RequesterProvider requesterProvider) {
+        this.useCase = useCase;
+        this.requesterProvider = requesterProvider;
+    }
 
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -56,6 +67,11 @@ public class CreateChargeController {
     @UnauthorizedResponse
     @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
+        LOGGER.info("Criando cobrança: userId={}, payerCpf={}, amount={}, description={}",
+                requesterProvider.requesterId(),
+                DataMasking.maskCpf(request.payerCpf),
+                request.amount, request.description
+        );
         var charge = useCase.createCharge(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(charge));
     }

@@ -93,4 +93,20 @@ class PositiveMoneyTest {
         assertThat(positiveMoney1.compareTo(positiveMoney3), is(0));
     }
 
+    @Test
+    void ofNullableReturnsOptionalWithValueWhenValid() {
+        var value = new BigDecimal("123.45");
+
+        var result = PositiveMoney.ofNullable(value);
+
+        assertThat(result.isPresent(), is(true));
+        assertThat(result.get().value(), is(value));
+    }
+
+    @Test
+    void ofNullableReturnsEmptyWhenValueIsNull() {
+        var result = PositiveMoney.ofNullable(null);
+
+        assertThat(result.isEmpty(), is(true));
+    }
 }

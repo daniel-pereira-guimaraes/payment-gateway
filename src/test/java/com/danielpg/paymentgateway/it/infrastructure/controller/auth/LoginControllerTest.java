@@ -24,7 +24,7 @@ class LoginControllerTest extends ControllerTestBase {
     private static final String WRONG_PASSWORD = "WrongPass!999";
     private static final String UNKNOWN_EMAIL = "unknown@email.com";
     private static final String UNKNOWN_CPF = "00000000353";
-    private static final String INVALID_EMAIL = "invalid-email";
+    private static final String INVALID_EMAIL = "invalid-emailAddress";
     private static final String INVALID_CPF = "123";
 
     private static final String REQUEST_BODY = """
@@ -113,13 +113,13 @@ class LoginControllerTest extends ControllerTestBase {
     }
 
     @Test
-    void returnsBadRequestWhenMissingPassword() throws Exception {
+    void returnsUnauthorizedWhenMissingPassword() throws Exception {
         var requestBody = buildRequestBody(EMAIL, null, null);
 
         mockMvc.perform(post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

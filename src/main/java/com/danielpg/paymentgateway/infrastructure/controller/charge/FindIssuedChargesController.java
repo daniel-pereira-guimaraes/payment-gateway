@@ -2,6 +2,7 @@ package com.danielpg.paymentgateway.infrastructure.controller.charge;
 
 import com.danielpg.paymentgateway.application.charge.FindIssuedChargesUseCase;
 import com.danielpg.paymentgateway.application.charge.FindReceivedChargesUseCase;
+import com.danielpg.paymentgateway.application.shared.RequesterProvider;
 import com.danielpg.paymentgateway.domain.charge.ChargeStatus;
 import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesItem;
 import com.danielpg.paymentgateway.domain.charge.query.received.ReceivedChargesItem;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +32,16 @@ import java.util.List;
 @RequestMapping("/charges/issued")
 public class FindIssuedChargesController {
 
-    @Autowired
-    private FindIssuedChargesUseCase useCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FindIssuedChargesController.class);
+
+    private final FindIssuedChargesUseCase useCase;
+    private final RequesterProvider requesterProvider;
+
+    public FindIssuedChargesController(FindIssuedChargesUseCase useCase,
+                                       RequesterProvider requesterProvider) {
+        this.useCase = useCase;
+        this.requesterProvider = requesterProvider;
+    }
 
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -56,6 +67,7 @@ public class FindIssuedChargesController {
                     example = "PENDING,PAID"
             )
             @RequestParam(value = "statuses", required = false) String statusCsv) {
+        LOGGER.info("Consultando cobranças emitidas: userId={}", requesterProvider.requesterId());
         var statuses = ChargeStatus.fromCsv(statusCsv);
         var response = useCase.find(statuses);
         return ResponseEntity.ok(Response.of(response));

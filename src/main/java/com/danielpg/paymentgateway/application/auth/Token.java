@@ -66,23 +66,22 @@ public class Token {
         private Builder() {
         }
 
-        //TODO: padronizar nomes de métodos como withXXX
-        public Builder rawToken(String rawToken) {
+        public Builder withRawToken(String rawToken) {
             this.rawToken = rawToken;
             return this;
         }
 
-        public Builder user(User user) {
+        public Builder withUser(User user) {
             this.user = user;
             return this;
         }
 
-        public Builder expiration(Long expiration) {
+        public Builder withExpiration(Long expiration) {
             this.expiration = expiration;
             return this;
         }
 
-        public Builder clock(AppClock clock) {
+        public Builder withClock(AppClock clock) {
             this.clock = clock;
             return this;
         }
