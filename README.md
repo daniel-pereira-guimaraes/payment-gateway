@@ -36,7 +36,7 @@ Mesmo com elevada cobertura automatizada, foram realizados mais de **50 testes m
 
 ## 🚀 Como Executar o Projeto com Docker Compose
 
-O projeto utiliza **Docker Compose** para orquestrar o ambiente (**Spring Boot + MySQL 8**) e um **build multi-stage** para compilar o JAR.  
+O projeto utiliza **Docker Compose** para orquestrar o ambiente (**Spring Boot + MySQL 8**) e um **build multi-stage** para compilar o JAR. 
 As variáveis de ambiente necessárias devem ser carregadas via **host**, não no código.
 
 ### Pré-requisitos
@@ -129,8 +129,8 @@ Todos os endpoints, exemplos de requisições e respostas estão documentados.
 
 ## ⚡ Boas Práticas e Observações Gerais
 
-- Boas práticas de **Clean Code**, **Clean Architecture**, **DDD** e **TDD** foram aplicadas;
-- Uso de vários recursos modernos do **Java 21**;
+- Boas práticas de **Clean Code**, **Clean Architecture**, **DDD** e **TDD** foram aplicadas.
+- Uso de vários recursos modernos do **Java 21**.
 - Segredos e variáveis sensíveis **não estão no código**, apenas no host.
 - Uso de **JDBC puro** para máxima performance no acesso aos dados.
 - Uso de **Liquibase** para versionamento da estrutura do banco de dados.
@@ -146,11 +146,11 @@ Todos os endpoints, exemplos de requisições e respostas estão documentados.
   Em produção, isso **não é recomendado**. Soluções seguras incluem:
 
    1. **Nunca gravar dados completos do cartão no banco:**
-      - Repassar os dados apenas para o autorizador;
+      - Repassar os dados apenas para o autorizador.
       - Salvar apenas o ID da autorização para cancelamentos futuros.
 
    2. **Salvar apenas hash do número do cartão (menos recomendado):**
-      - Útil apenas para cancelamentos, mas menos seguro que a primeira opção.
+      - Útil para cancelamentos, mas menos seguro que a primeira opção.
 
 > Em geral, evite armazenar dados sensíveis no banco; deixe o tratamento sob responsabilidade do autorizador.
 
@@ -160,12 +160,20 @@ Todos os endpoints, exemplos de requisições e respostas estão documentados.
 
 Durante o desenvolvimento, foram utilizadas **IAs como ChatGPT e Gemini**, exclusivamente via navegador web, para:
 
-- Auxílio na geração de trechos de código;
-- Sugestões de refatoração e melhorias de design;
+- Auxílio na geração de trechos de código.
+- Agilidade para encontrar bugs no código.
+- Sugestões de refatoração e melhorias de design.
 - Revisão de conceitos de Java, Spring Boot, arquitetura e padrões de projeto.
 
 > O desenvolvedor mantém **total responsabilidade** sobre qualidade, consistência, design, arquitetura e testes. As IAs são apenas ferramentas de apoio.
 
+### Considerações sobre uso de IAs
+
+- **Não é confiável**, exigindo supervisão e revisão humana sempre.
+- **Ajuda muito**, mas em alguns momentos **pode atrapalhar**.
+- O **uso no navegador** dificulta a **contextualização**, exigindo prompts enormes, 
+  algo que pode ser resolvido com **IDE** integrada com IAs, como **Cursor** e similares.
+ 
 ---
 
 ## 📜 Licença
