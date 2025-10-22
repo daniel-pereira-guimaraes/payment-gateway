@@ -167,7 +167,7 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
 
 > O desenvolvedor mantém **total responsabilidade** sobre qualidade, consistência, design, arquitetura e testes. As IAs são apenas ferramentas de apoio.
 
-### Considerações sobre uso de IAs
+### 🧠 Considerações sobre uso de IAs
 
 - **Não é confiável**, exigindo supervisão e revisão humana sempre.
 - **Ajuda muito**, mas em alguns momentos **pode atrapalhar**.
@@ -176,7 +176,7 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
  
 ---
 
-## Números do projeto
+## 🔢 Números do Projeto
 
 - **7** dias desenvolvendo
 - **70** horas de dedicação, aproximadamente
