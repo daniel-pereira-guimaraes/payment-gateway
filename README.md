@@ -15,7 +15,7 @@ O **Payment Gateway API** é um serviço desenvolvido em **Java 21** com **Sprin
 Desenvolvido para fins **didáticos** e **demonstração de conhecimentos**.
 
 > ### Esforço
-> - 🗓️ Período de desenvolvimento: **16/10/2025** a **23/10/2025**
+> - 🗓️ Período de desenvolvimento: **16/10/2025** a **22/10/2025**
 > - ⏱️ Carga horária aproximada: **70 horas**
 
 ---
