@@ -105,11 +105,12 @@ docker compose up --build
 
 ## 🛠 Tecnologias Utilizadas
 
-- **Java 21**, **Spring Boot 3.1.4**
+- **Linguagem:** Java 21
+- **Framework:** Spring Boot 3.1.4
 - **Banco de dados:** MySQL 8, H2Database (testes)
 - **Persistência:** JDBC, Liquibase
 - **Segurança:** JWT (HS256)
-- **Testes:** JUnit 5, Mockito, Hamcrest
+- **Testes:** JUnit 5, Mockito, Hamcrest e JaCoCo
 - **Documentação:** Swagger
 - **Infraestrutura:** Docker, Docker Compose
 
