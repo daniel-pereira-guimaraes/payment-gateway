@@ -185,7 +185,7 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
 - Mais de **200** commits
 - Mais de **180** arquivos *.java*
 - Mais de **8000** linhas de código Java
-- **96%** de cobertura de testes automatizados
+- Mais de **80%** de cobertura de testes
 - Mais de **450** testes automatizado
 - Mais de **50** testes manuais
 - Apenas **5** bugs detectados nos testes manuais (deve ter outros escondidos! rsrs)
