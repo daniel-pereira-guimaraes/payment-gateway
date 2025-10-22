@@ -30,7 +30,9 @@ O projeto conta com mais de **450 testes automatizados**, incluindo:
 
 Mesmo com elevada cobertura automatizada, foram realizados mais de **50 testes manuais**, identificando 5 bugs de validação de dados, todos corrigidos.
 
-[Planilha de testes manuais - Google Sheets](https://docs.google.com/spreadsheets/d/1Vn1TLUCuKpbDOMiU2uNNofOcIm2Y1hBNCA6T32BERrQ/edit?usp=sharing)
+<a href="https://docs.google.com/spreadsheets/d/1Vn1TLUCuKpbDOMiU2uNNofOcIm2Y1hBNCA6T32BERrQ/edit?usp=sharing" target="_blank">
+📄 Planilha de testes manuais - Google Sheets
+</a>
 
 ---
 
