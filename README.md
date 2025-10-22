@@ -193,6 +193,17 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
 
 ---
 
+## Considerações Finais
+
+Este projeto contempla apenas algumas das principais operações de um gateway de pagamento.
+Portanto, você poderá perceber a falta de funcionalidades como **alterar dados do usuário** e
+**trocar senha**, dentre outras. Tais funcionalidades não foram implementadas porque entendo
+serem desnecessárias para propósito didático e para mostrar meus conhecimentos. Para quem
+desenvolveu todo o projeto, algumas funcionalidades a mais não aumentariam significativamente
+o nível de complexidade.
+
+---
+
 ## 📜 Licença
 
 Este projeto foi desenvolvido para fins **didáticos** e **demonstração de conhecimentos.**
