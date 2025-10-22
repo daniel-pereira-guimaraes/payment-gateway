@@ -1,8 +1,6 @@
 package com.danielpg.paymentgateway.infrastructure.configuration.swagger;
 
-import com.danielpg.paymentgateway.infrastructure.configuration.AppErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import java.lang.annotation.*;

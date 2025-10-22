@@ -29,6 +29,7 @@ public class JdbcUserRepository implements UserRepository {
     private static final String SQL_SELECT_BY_ID = SQL_SELECT_BASE + " WHERE id = :id";
     private static final String SQL_SELECT_BY_CPF = SQL_SELECT_BASE + " WHERE cpf = :cpf";
     private static final String SQL_SELECT_BY_EMAIL = SQL_SELECT_BASE + " WHERE email_address = :email_address";
+    private static final String EMAIL_ADDRESS = "email_address";
 
     private final NamedParameterJdbcTemplate jdbc;
 
@@ -58,7 +59,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User getOrThrow(EmailAddress emailAddress) {
-        var params = Map.of("email_address", emailAddress.value());
+        var params = Map.of(EMAIL_ADDRESS, emailAddress.value());
         return queryForOptional(SQL_SELECT_BY_EMAIL, params)
                 .orElseThrow(() -> new UserNotFoundException(emailAddress));
     }
@@ -91,7 +92,7 @@ public class JdbcUserRepository implements UserRepository {
         return new MapSqlParameterSource()
                 .addValue("name", user.name().value())
                 .addValue("cpf", user.cpf().value())
-                .addValue("email_address", user.emailAddress().value())
+                .addValue(EMAIL_ADDRESS, user.emailAddress().value())
                 .addValue("hashedPassword", user.hashedPassword().hash())
                 .addValue("balance", user.balance().value());
     }
@@ -101,7 +102,7 @@ public class JdbcUserRepository implements UserRepository {
                 .withId(UserId.of(rs.getLong("id")))
                 .withName(PersonName.of(rs.getString("name")))
                 .withCpf(Cpf.of(rs.getString("cpf")))
-                .withEmailAddress(EmailAddress.of(rs.getString("email_address")))
+                .withEmailAddress(EmailAddress.of(rs.getString(EMAIL_ADDRESS)))
                 .withHashedPassword(HashedPassword.of(rs.getString("hashed_password")))
                 .withBalance(Balance.of(rs.getBigDecimal("balance")))
                 .build();

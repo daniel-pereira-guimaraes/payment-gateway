@@ -44,9 +44,8 @@ public class LoginUseCase {
             var user = userRepository.getOrThrow(request.cpf);
             return tryAuthenticate(user, request.plainTextPassword);
         } catch (RuntimeException e) {
-            LOGGER.info("Erro ao fazer login: cpf={}, message={}",
-                    DataMasking.maskCpf(request.cpf.value()),
-                    e.getMessage()
+            LOGGER.info("Erro ao fazer login: cpf={}",
+                    DataMasking.maskCpf(request.cpf.value())
             );
             throw e;
         }
@@ -57,9 +56,8 @@ public class LoginUseCase {
             var user = userRepository.getOrThrow(request.emailAddress);
             return tryAuthenticate(user, request.plainTextPassword);
         } catch (RuntimeException e) {
-            LOGGER.info("Erro ao fazer login: emailAddress={}, message={}",
-                    DataMasking.maskEmail(request.emailAddress.value()),
-                    e.getMessage()
+            LOGGER.info("Erro ao fazer login: emailAddress={}",
+                    DataMasking.maskEmail(request.emailAddress.value())
             );
             throw e;
         }

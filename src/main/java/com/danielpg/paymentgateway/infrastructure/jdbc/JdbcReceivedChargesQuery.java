@@ -33,6 +33,7 @@ public class JdbcReceivedChargesQuery implements ReceivedChargesQuery {
             """;
 
     private static final String SQL_ORDER = " ORDER BY c.id";
+    private static final String STATUS = "status";
 
     private final NamedParameterJdbcTemplate jdbc;
     private final RowMapper<ReceivedChargesItem> mapper;
@@ -52,7 +53,7 @@ public class JdbcReceivedChargesQuery implements ReceivedChargesQuery {
     private String buildSql(ReceivedChargesFilter filter) {
         var sql = new StringBuilder(SQL_BASE);
         if (filter.statuses() != null && !filter.statuses().isEmpty()) {
-            var statusParams = JdbcEnumUtils.buildParams("status", filter.statuses());
+            var statusParams = JdbcEnumUtils.buildParams(STATUS, filter.statuses());
             sql.append(" AND c.status IN ").append(statusParams);
         }
         sql.append(' ').append(SQL_ORDER);
@@ -63,7 +64,7 @@ public class JdbcReceivedChargesQuery implements ReceivedChargesQuery {
         var params = new MapSqlParameterSource()
                 .addValue("payerId", filter.payerId().value());
         if (filter.statuses() != null && !filter.statuses().isEmpty()) {
-            JdbcEnumUtils.addParams(params, "status", filter.statuses());
+            JdbcEnumUtils.addParams(params, STATUS, filter.statuses());
         }
         return params;
     }
@@ -79,7 +80,7 @@ public class JdbcReceivedChargesQuery implements ReceivedChargesQuery {
                 rs.getString("description"),
                 rs.getLong("created_at"),
                 rs.getLong("due_at"),
-                ChargeStatus.valueOf(rs.getString("status")),
+                ChargeStatus.valueOf(rs.getString(STATUS)),
                 rs.getObject("paid_at") == null ? null : rs.getLong("paid_at")
         );
     }

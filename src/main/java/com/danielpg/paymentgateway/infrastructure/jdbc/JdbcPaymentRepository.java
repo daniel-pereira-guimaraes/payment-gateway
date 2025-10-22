@@ -71,6 +71,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
 
     private static final String SQL_EXISTS_BY_CHARGE_ID =
             "SELECT 1 FROM tb_payment WHERE charge_id = :chargeId";
+    public static final String CHARGE_ID = "chargeId";
 
     private final NamedParameterJdbcTemplate jdbc;
 
@@ -81,7 +82,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
     @Override
     public boolean exists(ChargeId chargeId) {
         try {
-            var params = Map.of("chargeId", chargeId.value());
+            var params = Map.of(CHARGE_ID, chargeId.value());
             jdbc.queryForObject(SQL_EXISTS_BY_CHARGE_ID, params, Integer.class);
             return true;
         } catch (EmptyResultDataAccessException e) {
@@ -92,7 +93,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
     @Override
     public Optional<Payment> get(ChargeId chargeId) {
         try {
-            var params = Map.of("chargeId", chargeId.value());
+            var params = Map.of(CHARGE_ID, chargeId.value());
             return Optional.ofNullable(jdbc.queryForObject(SQL_SELECT_BY_CHARGE_ID, params, (rs, rowNum) -> mapPayment(rs)));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -129,7 +130,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
     private MapSqlParameterSource commonParams(Payment payment) {
         var creditCard = payment.creditCard();
         return new MapSqlParameterSource()
-                .addValue("chargeId", payment.chargeId().value())
+                .addValue(CHARGE_ID, payment.chargeId().value())
                 .addValue("paidAt", payment.paidAt().value())
                 .addValue("method", payment.method().name())
                 .addValue("creditCardNumber", creditCard != null ? creditCard.number().value() : null)

@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -111,7 +110,8 @@ public class RegisterPaymentController {
     @BadRequestResponse
     @ForbiddenResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
-        LOGGER.info("Registrando pagamento: chargeId={}, method={}", request.chargeId, request.method);
+        LOGGER.info("Registrando pagamento: requesterId={}, chargeId={}, method={}",
+                requesterProvider.requesterId(), request.chargeId, request.method);
         var payment = useCase.registerPayment(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(payment));
     }

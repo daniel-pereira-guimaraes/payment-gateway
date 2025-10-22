@@ -5,7 +5,6 @@ import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesQuery
 import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesFilter;
 import com.danielpg.paymentgateway.domain.charge.query.issued.IssuedChargesItem;
 import io.micrometer.common.util.StringUtils;
-import liquibase.util.StringUtil;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -35,6 +34,7 @@ public class JdbcIssuedChargesQuery implements IssuedChargesQuery {
             """;
 
     private static final String SQL_ORDER = " ORDER BY c.id";
+    private static final String STATUS = "status";
 
     private final NamedParameterJdbcTemplate jdbc;
     private final RowMapper<IssuedChargesItem> mapper;
@@ -53,7 +53,7 @@ public class JdbcIssuedChargesQuery implements IssuedChargesQuery {
 
     private String buildSql(IssuedChargesFilter filter) {
         var sql = new StringBuilder(SQL_BASE);
-        var statusParams = JdbcEnumUtils.buildParams("status", filter.statuses());
+        var statusParams = JdbcEnumUtils.buildParams(STATUS, filter.statuses());
         if (!StringUtils.isBlank(statusParams)) {
             sql.append(" AND c.status IN ").append(statusParams);
         }
@@ -64,7 +64,7 @@ public class JdbcIssuedChargesQuery implements IssuedChargesQuery {
     private MapSqlParameterSource buildParams(IssuedChargesFilter filter) {
         var params = new MapSqlParameterSource()
                 .addValue("issuerId", filter.issuerId().value());
-        JdbcEnumUtils.addParams(params, "status", filter.statuses());
+        JdbcEnumUtils.addParams(params, STATUS, filter.statuses());
         return params;
     }
 
@@ -79,7 +79,7 @@ public class JdbcIssuedChargesQuery implements IssuedChargesQuery {
                 rs.getString("description"),
                 rs.getLong("created_at"),
                 rs.getLong("due_at"),
-                ChargeStatus.valueOf(rs.getString("status")),
+                ChargeStatus.valueOf(rs.getString(STATUS)),
                 rs.getObject("paid_at") == null ? null : rs.getLong("paid_at")
         );
     }

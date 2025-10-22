@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +25,11 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-    @Autowired
-    private LoginUseCase loginUseCase;
+    private final LoginUseCase loginUseCase;
+
+    public LoginController(LoginUseCase loginUseCase) {
+        this.loginUseCase = loginUseCase;
+    }
 
     @PostMapping("/login")
     @Operation(
@@ -100,8 +102,8 @@ public class LoginController {
     @BadRequestResponse
     public ResponseEntity<Response> post(@RequestBody Request request) {
         LOGGER.info("Fazendo login: cpf={}, emailAddress={}",
-                DataMasking.maskCpf(request.cpf),
-                DataMasking.maskEmail(request.emailAddress)
+                request.cpf == null ? null : DataMasking.maskCpf(request.cpf),
+                request.emailAddress == null ? null : DataMasking.maskEmail(request.emailAddress)
         );
         var token = loginUseCase.login(request.toUseCaseRequest());
         return ResponseEntity.status(HttpStatus.OK).body(Response.of(token));

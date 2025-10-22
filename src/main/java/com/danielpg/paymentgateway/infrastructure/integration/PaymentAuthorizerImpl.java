@@ -70,7 +70,7 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
             throw new PaymentNotAuthorizedException("Resposta inesperada do autorizador.");
         }
 
-        if (!response.data.authorized) {
+        if (Boolean.FALSE.equals(response.data.authorized)) {
             throw new PaymentNotAuthorizedException(switch (operation) {
                 case PAYMENT -> "Pagamento não autorizado.";
                 case CANCEL_PAYMENT -> "Cancelamento não autorizado.";
@@ -82,12 +82,12 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void validateAuthorizerUrl() {
         if (StringUtils.isBlank(authorizerUrl)) {
-            throw new RuntimeException("URL do autorizador não configurada.");
+            throw new AuthorizerConfigException("URL do autorizador não configurada.", null);
         }
         try {
             URI.create(authorizerUrl).toURL();
         } catch (MalformedURLException e) {
-            throw new RuntimeException("URL do autorizador inválida.", e);
+            throw new AuthorizerConfigException("URL do autorizador inválida.", e);
         }
     }
 
@@ -116,4 +116,11 @@ public class PaymentAuthorizerImpl implements PaymentAuthorizer {
         CANCEL_PAYMENT,
         DEPOSIT
     }
+
+    public static class AuthorizerConfigException extends RuntimeException {
+        public AuthorizerConfigException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
 }
