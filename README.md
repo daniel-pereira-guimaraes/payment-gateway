@@ -12,7 +12,7 @@ O **Payment Gateway API** é um serviço desenvolvido em **Java 21** com **Sprin
 - Geração e validação de **JWT** para autenticação segura.
 - API documentada com **Swagger**.
 
-Desenvolvido para fins **didáticos** e **demonstração de conhecimentos**.
+Desenvolvido para fins de **demonstração de conhecimentos**.
 
 > ### Esforço
 > - 🗓️ Período de desenvolvimento: **16/10/2025** a **22/10/2025**
@@ -143,7 +143,7 @@ Todos os endpoints, exemplos de requisições e respostas estão documentados.
 
 - A integração com o **serviço externo autorizador** é **simplificada**, apenas para demonstrar o básico da integração; não reflete produção.
 
-- **Dados de cartão são salvos no banco de dados apenas para fins didáticos.**  
+- **Dados de cartão são salvos no banco de dados apenas para testes.**  
   Em produção, isso **não é recomendado**. Soluções seguras incluem:
 
    1. **Nunca gravar dados completos do cartão no banco:**
@@ -171,9 +171,10 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
 ### 🧠 Considerações sobre uso de IAs
 
 - **Não é confiável**, exigindo supervisão e revisão humana sempre.
-- **Ajuda muito**, mas em alguns momentos **pode atrapalhar**.
-- O **uso no navegador** dificulta a **contextualização**, exigindo prompts enormes, 
-  algo que pode ser resolvido com **IDE** integrada com IAs, como **Cursor** e similares.
+- **Ajuda muito**, mas em alguns momentos **pode atrapalhar**, sugerindo soluções ruins
+  várias vezes seguidas, atrasando em vez de acelerar o desenvolvimento.
+- O **uso no navegador** dificulta a **contextualização**, exigindo prompts mais complexos. Usar **IDE**
+  integrada com IAs, como **Cursor** e similares, tende a minimizar este problema.
  
 ---
 
@@ -193,14 +194,17 @@ Durante o desenvolvimento, foram utilizadas **IAs** como **ChatGPT** e **Gemini*
 
 ---
 
-## Considerações Finais
+## 📝 Considerações Finais
 
 Este projeto contempla apenas algumas das principais operações de um gateway de pagamento.
 Portanto, você poderá perceber a falta de funcionalidades como **alterar dados do usuário** e
-**trocar senha**, dentre outras. Tais funcionalidades não foram implementadas porque entendo
-serem desnecessárias para propósito didático e para mostrar meus conhecimentos. Para quem
-desenvolveu todo o projeto, algumas funcionalidades a mais não aumentariam significativamente
-o nível de complexidade.
+**trocar senha**, dentre outras. Tais funcionalidades não foram implementadas porque são 
+desnecessárias para demonstrar conhecimentos.
+
+Em um ambiente real de gateway de pagamento seria necessário considerar também aspectos 
+como segurança avançada, escalabilidade, resiliência, monitoramento e conformidade com 
+normas do setor, que não foram contemplados aqui por se tratar de um projeto simples 
+para demonstração de conhecimentos sobre as tecnologias e práticas adotadas.
 
 ---
 
